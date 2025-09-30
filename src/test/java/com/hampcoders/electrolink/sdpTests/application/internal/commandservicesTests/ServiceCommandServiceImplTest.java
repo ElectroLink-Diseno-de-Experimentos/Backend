@@ -82,4 +82,47 @@ public class ServiceCommandServiceImplTest {
         verify(serviceRepository, times(1)).save(any(ServiceEntity.class));
     }
 
+    // [--- Pruebas para UpdateServiceCommand ---]
+
+    @Test
+    @DisplayName("handle(UpdateServiceCommand) debería actualizar el servicio existente (AAA)")
+    public void testHandleUpdateServiceCommand_Success() {
+        // Arrange
+        // 1. Crear el comando con los nuevos datos
+        var command = new UpdateServiceCommand(
+            MOCK_SERVICE_ID, "Updated Name", "Updated Description", 150.0,
+            "90h", "Updated Category", false, "Admin", policy, restriction, tags, components
+        );
+
+        // 2. Crear un mock de la entidad existente que se 'encontrará' en el repositorio
+        // Usamos spy() para poder llamar a métodos reales como updateFrom()
+        ServiceEntity existingService = Mockito.spy(new ServiceEntity(
+            "Old Name", "Old Description", 100.0, "60h", "Category",
+            true, "Admin", policy, restriction, tags, components
+        ));
+
+        // Simular que el repositorio encuentra la entidad
+        when(serviceRepository.findById(MOCK_SERVICE_ID)).thenReturn(Optional.of(existingService));
+
+        // Simular el comportamiento de save (podemos devolver la misma entidad)
+        when(serviceRepository.save(any(ServiceEntity.class))).thenReturn(existingService);
+
+        // Act
+        serviceCommandServiceImpl.handle(command);
+
+        // Assert
+        // 1. Verificar que se buscó por ID.
+        verify(serviceRepository, times(1)).findById(MOCK_SERVICE_ID);
+
+        // 2. Verificar que se llamó al metodo updateFrom() de la entidad.
+        verify(existingService, times(1)).updateFrom(any(ServiceEntity.class));
+
+        // 3. Verificar que se llamó a save para persistir los cambios.
+        verify(serviceRepository, times(1)).save(existingService);
+
+        // 4. (Opcional) Verificar que los datos de la entidad se actualizaron.
+        assertEquals(command.name(), existingService.getName());
+        assertEquals(command.description(), existingService.getDescription());
+    }
+
 }
