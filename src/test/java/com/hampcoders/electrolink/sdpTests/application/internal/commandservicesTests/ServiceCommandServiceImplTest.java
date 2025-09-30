@@ -175,5 +175,25 @@ public class ServiceCommandServiceImplTest {
         verify(serviceRepository, times(1)).deleteById(MOCK_SERVICE_ID);
     }
 
+    @Test
+    @DisplayName("handle(DeleteServiceCommand) debería lanzar excepción si el servicio no existe (AAA)")
+    public void testHandleDeleteServiceCommand_ServiceNotFound() {
+        // Arrange
+        var command = new DeleteServiceCommand(MOCK_SERVICE_ID);
 
+        // Simular que el repositorio confirma que la entidad NO existe
+        when(serviceRepository.existsById(MOCK_SERVICE_ID)).thenReturn(false);
+
+        // Act & Assert
+        // 1. Verificar que se lanza la excepción correcta.
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            serviceCommandServiceImpl.handle(command);
+        });
+
+        // 2. Verificar el mensaje de la excepción.
+        String expectedMessage = "Service not found with id: " + MOCK_SERVICE_ID;
+        assertEquals(expectedMessage, exception.getMessage());
+        // 3. Verificar que deleteById nunca se llamó.
+        verify(serviceRepository, never()).deleteById(MOCK_SERVICE_ID);
+    }
 }
