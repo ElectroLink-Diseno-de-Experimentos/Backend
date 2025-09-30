@@ -125,4 +125,29 @@ public class ServiceCommandServiceImplTest {
         assertEquals(command.description(), existingService.getDescription());
     }
 
+    @Test
+    @DisplayName("handle(UpdateServiceCommand) debería lanzar excepción si el servicio no existe (AAA)")
+    public void testHandleUpdateServiceCommand_ServiceNotFound() {
+        // Arrange
+        var command = new UpdateServiceCommand(
+            MOCK_SERVICE_ID, "Name", "Desc", 100.0,
+            "60h", "Category", true, "Admin", policy, restriction, tags, components
+        );
+
+        // Simular que el repositorio NO encuentra la entidad
+        when(serviceRepository.findById(MOCK_SERVICE_ID)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        // 1. Verificar que se lanza la excepción correcta.
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            serviceCommandServiceImpl.handle(command);
+        });
+
+        // 2. Verificar el mensaje de la excepción.
+        String expectedMessage = "Service not found with id: " + MOCK_SERVICE_ID;
+        assertEquals(expectedMessage, exception.getMessage());
+        // 3. Verificar que save nunca se llamó.
+        verify(serviceRepository, never()).save(any(ServiceEntity.class));
+    }
+
 }
