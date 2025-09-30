@@ -150,4 +150,30 @@ public class ServiceCommandServiceImplTest {
         verify(serviceRepository, never()).save(any(ServiceEntity.class));
     }
 
+    // [--- Pruebas para DeleteServiceCommand ---]
+
+    @Test
+    @DisplayName("handle(DeleteServiceCommand) debería eliminar el servicio existente (AAA)")
+    public void testHandleDeleteServiceCommand_Success() {
+        // Arrange
+        var command = new DeleteServiceCommand(MOCK_SERVICE_ID);
+
+        // Simular que el repositorio confirma que la entidad existe
+        when(serviceRepository.existsById(MOCK_SERVICE_ID)).thenReturn(true);
+
+        // Configuramos la eliminación para que no haga nada (void method)
+        doNothing().when(serviceRepository).deleteById(MOCK_SERVICE_ID);
+
+        // Act
+        serviceCommandServiceImpl.handle(command);
+
+        // Assert
+        // 1. Verificar que se comprobó la existencia del servicio.
+        verify(serviceRepository, times(1)).existsById(MOCK_SERVICE_ID);
+
+        // 2. Verificar que se llamó al metodo deleteById exactamente una vez.
+        verify(serviceRepository, times(1)).deleteById(MOCK_SERVICE_ID);
+    }
+
+
 }
