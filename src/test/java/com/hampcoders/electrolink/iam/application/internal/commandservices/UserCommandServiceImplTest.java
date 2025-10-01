@@ -111,8 +111,8 @@ public class UserCommandServiceImplTest {
         var cmd = new SignUpCommand("charlie", "pwd", List.of(requestedRoleHomeOwner, requestedRoleClient));
 
         when(userRepository.existsByUsername("charlie")).thenReturn(false);
-        var roleHomeOwner = (Role) mock(Role.class);
-        var roleClient = (Role) mock(Role.class);
+        var roleHomeOwner = mock(Role.class);
+        var roleClient = mock(Role.class);
         when(roleRepository.findByName(Roles.ROLE_HOMEOWNER)).thenReturn(Optional.of(roleHomeOwner));
         when(roleRepository.findByName(Roles.ROLE_CLIENT)).thenReturn(Optional.of(roleClient));
         when(hashingService.encode("pwd")).thenReturn("hashedPwd");
