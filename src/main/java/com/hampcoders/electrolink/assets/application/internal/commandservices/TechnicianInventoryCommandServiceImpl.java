@@ -33,8 +33,8 @@ public class TechnicianInventoryCommandServiceImpl implements TechnicianInventor
             throw new IllegalStateException("Technician inventory already exists for this technician ID");
         }
         var inventory = new TechnicianInventory(command);
-        technicianInventoryRepository.save(inventory);
-        return inventory.getId();
+        var savedInventory = technicianInventoryRepository.save(inventory);
+        return savedInventory.getId();
     }
 
     @Override
