@@ -43,15 +43,19 @@ public class ComponentTypeCommandServiceImpl implements ComponentTypeCommandServ
 
     @Override
     public Boolean handle(DeleteComponentTypeCommand command) {
-        if (!componentTypeRepository.existsById(command.componentTypeId())) {
+        Long typeId = command.componentTypeId();
+
+        if (!componentTypeRepository.existsById(typeId)) {
             return false;
         }
 
-        if (componentRepository.existsByComponentTypeId(command.componentTypeId())) {
+        ComponentTypeId typeIdVO = new ComponentTypeId(typeId);
+
+        if (componentRepository.existsByComponentTypeId(typeIdVO)) {
             throw new IllegalStateException("Cannot delete component type: it is currently in use by one or more components.");
         }
 
-        componentTypeRepository.deleteById(command.componentTypeId());
+        componentTypeRepository.deleteById(typeId);
         return true;
     }
 }
