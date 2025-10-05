@@ -1,6 +1,6 @@
 package com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories;
 
-import com.hampcoders.electrolink.assets.domain.model.valueobjects.TechnicianId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.TechnicianId;
 import com.hampcoders.electrolink.monitoring.domain.model.aggregates.ServiceOperation;
 import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RequestId;
 import org.springframework.data.jpa.repository.JpaRepository;
