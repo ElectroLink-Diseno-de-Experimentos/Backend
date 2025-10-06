@@ -12,7 +12,7 @@ public class CreateServiceOperationCommandFromResourceAssembler {
 
   public static CreateServiceOperationCommand toCommandFromResource(CreateServiceOperationResource resource) {
     return new CreateServiceOperationCommand(
-        new RequestId(resource.technicianId()),
+        new RequestId(resource.requestId()),
         new TechnicianId(resource.technicianId()),
         OffsetDateTime.now(), // startedAt
         null,                 // completedAt
