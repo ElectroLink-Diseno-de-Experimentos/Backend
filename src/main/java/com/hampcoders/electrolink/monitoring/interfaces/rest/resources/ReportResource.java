@@ -5,6 +5,6 @@ import java.util.UUID;
 public record ReportResource(
     Long id,
     Long requestId,
-    String reportType,
-    String description
+    String description,
+    String reportType
 ) {}

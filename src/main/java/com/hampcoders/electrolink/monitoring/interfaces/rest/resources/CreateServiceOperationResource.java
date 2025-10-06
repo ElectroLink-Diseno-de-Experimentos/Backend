@@ -1,5 +1,5 @@
 package com.hampcoders.electrolink.monitoring.interfaces.rest.resources;
 
-public record CreateServiceOperationResource(
-    Long technicianId
+public record CreateServiceOperationResource(Long requestId,
+                                             Long technicianId
 ) {}
