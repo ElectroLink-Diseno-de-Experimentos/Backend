@@ -6,10 +6,9 @@ import com.hampcoders.electrolink.iam.domain.model.queries.GetUserByIdQuery;
 import com.hampcoders.electrolink.iam.domain.model.queries.GetUserByUsernameQuery;
 import com.hampcoders.electrolink.iam.domain.services.UserQueryService;
 import com.hampcoders.electrolink.iam.infrastructure.persistence.jpa.repositories.UserRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 /**
  * Implementation of {@link UserQueryService} interface.
@@ -29,6 +28,7 @@ public class UserQueryServiceImpl implements UserQueryService {
 
   /**
    * This method is used to handle {@link GetAllUsersQuery} query.
+   *
    * @param query {@link GetAllUsersQuery} instance.
    * @return {@link List} of {@link User} instances.
    * @see GetAllUsersQuery
@@ -40,6 +40,7 @@ public class UserQueryServiceImpl implements UserQueryService {
 
   /**
    * This method is used to handle {@link GetUserByIdQuery} query.
+   *
    * @param query {@link GetUserByIdQuery} instance.
    * @return {@link Optional} of {@link User} instance.
    * @see GetUserByIdQuery
@@ -51,6 +52,7 @@ public class UserQueryServiceImpl implements UserQueryService {
 
   /**
    * This method is used to handle {@link GetUserByUsernameQuery} query.
+   *
    * @param query {@link GetUserByUsernameQuery} instance.
    * @return {@link Optional} of {@link User} instance.
    * @see GetUserByUsernameQuery
