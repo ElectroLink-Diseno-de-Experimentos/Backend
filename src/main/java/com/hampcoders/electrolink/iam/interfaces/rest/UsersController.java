@@ -6,6 +6,7 @@ import com.hampcoders.electrolink.iam.domain.services.UserQueryService;
 import com.hampcoders.electrolink.iam.interfaces.rest.resources.UserResource;
 import com.hampcoders.electrolink.iam.interfaces.rest.transform.UserResourceFromEntityAssembler;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 /**
- * This class is a REST controller that exposes the users resource.
+ * This class is a REST controller that exposes the user's resource.
  * It includes the following operations:
  * - GET /api/v1/users: returns all the users
  * - GET /api/v1/users/{userId}: returns the user with the given id
@@ -33,7 +32,7 @@ public class UsersController {
   }
 
   /**
-   * This method returns all the users.
+   * Returns all users.
    *
    * @return a list of user resources.
    * @see UserResource
@@ -49,7 +48,7 @@ public class UsersController {
   }
 
   /**
-   * This method returns the user with the given id.
+   * Returns the user with the given ID.
    *
    * @param userId the user id.
    * @return the user resource with the given id
