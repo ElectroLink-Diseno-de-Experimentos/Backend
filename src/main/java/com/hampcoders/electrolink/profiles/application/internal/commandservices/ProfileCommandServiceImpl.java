@@ -3,7 +3,7 @@ package com.hampcoders.electrolink.profiles.application.internal.commandservices
 import com.hampcoders.electrolink.assets.domain.model.commands.CreateTechnicianInventoryCommand;
 import com.hampcoders.electrolink.assets.domain.model.valueobjects.TechnicianId;
 import com.hampcoders.electrolink.assets.domain.services.TechnicianInventoryCommandService;
-import com.hampcoders.electrolink.profiles.application.internal.outboundservices.ExternalAssetsService;
+import com.hampcoders.electrolink.profiles.application.internal.outboundservices.IExternalAssetsService;
 import com.hampcoders.electrolink.profiles.domain.model.aggregates.Profile;
 import com.hampcoders.electrolink.profiles.domain.model.commands.CreateProfileCommand;
 import com.hampcoders.electrolink.profiles.domain.model.commands.DeleteProfileCommand;
@@ -24,9 +24,9 @@ import java.util.Optional;
 public class ProfileCommandServiceImpl implements ProfileCommandService {
 
   private final ProfileRepository profileRepository;
-  private final ExternalAssetsService externalAssetsService;
+  private final IExternalAssetsService externalAssetsService;
 
-  public ProfileCommandServiceImpl(ProfileRepository profileRepository,ExternalAssetsService externalAssetsService) {
+  public ProfileCommandServiceImpl(ProfileRepository profileRepository, IExternalAssetsService externalAssetsService) {
     this.profileRepository = profileRepository;
     this.externalAssetsService = externalAssetsService;
   }
