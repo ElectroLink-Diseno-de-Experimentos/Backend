@@ -5,13 +5,12 @@ import com.hampcoders.electrolink.iam.domain.model.queries.GetAllRolesQuery;
 import com.hampcoders.electrolink.iam.domain.model.queries.GetRoleByNameQuery;
 import com.hampcoders.electrolink.iam.domain.services.RoleQueryService;
 import com.hampcoders.electrolink.iam.infrastructure.persistence.jpa.repositories.RoleRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 /**
- * RoleQueryServiceImpl class
+ * RoleQueryServiceImpl class.
  * This class is used to handle the role queries
  */
 @Service
@@ -19,7 +18,8 @@ public class RoleQueryServiceImpl implements RoleQueryService {
   private final RoleRepository roleRepository;
 
   /**
-   * RoleQueryServiceImpl constructor
+   * RoleQueryServiceImpl constructor.
+   *
    * @param roleRepository the role repository
    */
   public RoleQueryServiceImpl(RoleRepository roleRepository) {
@@ -27,9 +27,10 @@ public class RoleQueryServiceImpl implements RoleQueryService {
   }
 
   /**
-   * Handle the get all roles query
-   * @param query the get all roles query
-   * @return List<Role> the list of roles
+   * Handle the get all-roles query.
+   *
+   * @param query the get all-roles query
+   * @return {@link List}<{@link Role}> the list of roles
    */
   @Override
   public List<Role> handle(GetAllRolesQuery query) {
@@ -37,9 +38,10 @@ public class RoleQueryServiceImpl implements RoleQueryService {
   }
 
   /**
-   * Handle the get role by name query
-   * @param query the get role by name query
-   * @return Optional<Role> the role
+   * Handle the get role by a name query.
+   *
+   * @param query the get role-by-name query
+   * @return {@link Optional}<{@link Role}> the role
    */
   @Override
   public Optional<Role> handle(GetRoleByNameQuery query) {

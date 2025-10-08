@@ -5,19 +5,19 @@ import com.hampcoders.electrolink.iam.domain.services.RoleQueryService;
 import com.hampcoders.electrolink.iam.interfaces.rest.resources.RoleResource;
 import com.hampcoders.electrolink.iam.interfaces.rest.transform.RoleResourceFromEntityAssembler;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
 
 /**
- *  Roles Controller
- *  This controller is responsible for handling all the requests related to roles
+ * Roles Controller.
+ * This controller is responsible for handling all the requests related to roles.
  */
 @RestController
-@RequestMapping(value = "/ap/v1/roles", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/roles", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Roles", description = "Role Management Endpoints")
 public class RolesController {
 
@@ -28,7 +28,8 @@ public class RolesController {
   }
 
   /**
-   * Get all roles
+   * Get all roles.
+   *
    * @return List of role resources
    * @see RoleResource
    */
