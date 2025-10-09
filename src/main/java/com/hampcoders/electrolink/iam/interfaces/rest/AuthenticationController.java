@@ -17,15 +17,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 /**
- * AuthenticationController
+ * AuthenticationController.
  * <p>
- *     This controller is responsible for handling authentication requests.
- *     It exposes two endpoints:
- *     <ul>
- *         <li>POST /api/v1/auth/sign-in</li>
- *         <li>POST /api/v1/auth/sign-up</li>
- *     </ul>
+ * This controller is responsible for handling authentication requests.
+ * It exposes two endpoints:
+ * <ul>
+ * <li>POST /api/v1/auth/sign-in</li>
+ * <li>POST /api/v1/auth/sign-up</li>
+ * </ul>
  * </p>
  */
 @RestController
@@ -41,6 +42,7 @@ public class AuthenticationController {
 
   /**
    * Handles the sign-in request.
+   *
    * @param signInResource the sign-in request body.
    * @return the authenticated user resource.
    */
@@ -63,6 +65,7 @@ public class AuthenticationController {
 
   /**
    * Handles the sign-up request.
+   *
    * @param signUpResource the sign-up request body.
    * @return the created user resource.
    */

@@ -5,12 +5,11 @@ import com.hampcoders.electrolink.iam.domain.model.entities.Role;
 import com.hampcoders.electrolink.iam.domain.model.valueobjects.Roles;
 import com.hampcoders.electrolink.iam.domain.services.RoleCommandService;
 import com.hampcoders.electrolink.iam.infrastructure.persistence.jpa.repositories.RoleRepository;
+import java.util.Arrays;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-
 /**
- * Implementation of {@link RoleCommandService} to handle {@link SeedRolesCommand}
+ * Implementation of {@link RoleCommandService} to handle {@link SeedRolesCommand}.
  */
 @Service
 public class RoleCommandServiceImpl implements RoleCommandService {
@@ -22,7 +21,8 @@ public class RoleCommandServiceImpl implements RoleCommandService {
   }
 
   /**
-   * This method will handle the {@link SeedRolesCommand} and will create the roles if not exists
+   * This method will handle the {@link SeedRolesCommand} and will create the roles if not exists.
+   *
    * @param command {@link SeedRolesCommand}
    * @see SeedRolesCommand
    */
@@ -30,7 +30,7 @@ public class RoleCommandServiceImpl implements RoleCommandService {
   public void handle(SeedRolesCommand command) {
     Arrays.stream(Roles.values())
         .forEach(role -> {
-          if(!roleRepository.existsByName(role)) {
+          if (!roleRepository.existsByName(role)) { // SPACE ADDED HERE
             roleRepository.save(new Role(Roles.valueOf(role.name())));
           }
         });
