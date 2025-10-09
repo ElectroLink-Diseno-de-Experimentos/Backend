@@ -26,10 +26,10 @@ public class ServiceOperationResourceFromEntityAssemblerTest {
         ServiceStatus status = ServiceStatus.COMPLETED;
 
         var requestIdVo = mock(RequestId.class);
-        when(requestIdVo.getRequestId()).thenReturn(requestId);
+        when(requestIdVo.getId()).thenReturn(requestId);
 
         var technicianIdVo = mock(TechnicianId.class);
-        when(technicianIdVo.getId()).thenReturn(technicianId);
+        when(technicianIdVo.getTechnicianId()).thenReturn(technicianId);
 
         ServiceOperation entity = mock(ServiceOperation.class);
         when(entity.getId()).thenReturn(serviceOperationId);
@@ -58,8 +58,8 @@ public class ServiceOperationResourceFromEntityAssemblerTest {
         verify(entity).getStartedAt();
         verify(entity).getCompletedAt();
         verify(entity).getCurrentStatus();
-        verify(requestIdVo).getRequestId();
-        verify(technicianIdVo).getId();
+        verify(requestIdVo).getId();
+        verify(technicianIdVo).getTechnicianId();
         verifyNoMoreInteractions(entity, requestIdVo, technicianIdVo);
     }
 }

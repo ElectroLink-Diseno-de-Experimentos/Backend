@@ -18,11 +18,11 @@ public class RatingResourceFromEntityAssembler {
   public static RatingResource toResourceFromEntity(Rating entity) {
     return new RatingResource(
         entity.getId(),
-        entity.getRequestId().getRequestId(),
+        entity.getRequestId().getId(),
         entity.getScore(),
         entity.getComment(),
         entity.getRaterId(),
-        entity.getTechnicianId().getId()
+        entity.getTechnicianId().getTechnicianId()
     );
   }
 }

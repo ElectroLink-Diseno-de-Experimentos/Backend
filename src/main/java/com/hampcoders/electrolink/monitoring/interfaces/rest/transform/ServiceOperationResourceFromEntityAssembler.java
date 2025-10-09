@@ -18,8 +18,8 @@ public class ServiceOperationResourceFromEntityAssembler {
   public static ServiceOperationResource toResourceFromEntity(ServiceOperation entity) {
     return new ServiceOperationResource(
         entity.getId(),
-        entity.getRequestId().getRequestId(),
-        entity.getTechnicianId().getId(),
+        entity.getRequestId().getId(),
+        entity.getTechnicianId().getTechnicianId(),
         entity.getStartedAt(),
         entity.getCompletedAt(),
         entity.getCurrentStatus().name()

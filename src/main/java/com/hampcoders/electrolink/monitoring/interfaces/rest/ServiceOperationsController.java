@@ -64,7 +64,7 @@ public class ServiceOperationsController {
     var command = CreateServiceOperationCommandFromResourceAssembler
         .toCommandFromResource(resource);
     var id = commandService.handle(command);
-    return new ResponseEntity<>(id.getRequestId(), HttpStatus.CREATED);
+    return new ResponseEntity<>(id.getId(), HttpStatus.CREATED);
   }
 
   /**
