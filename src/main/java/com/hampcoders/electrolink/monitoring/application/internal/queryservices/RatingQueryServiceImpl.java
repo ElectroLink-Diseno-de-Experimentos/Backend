@@ -5,18 +5,19 @@ import com.hampcoders.electrolink.monitoring.domain.model.queries.GetAllRatingsQ
 import com.hampcoders.electrolink.monitoring.domain.model.queries.GetRatingByIdQuery;
 import com.hampcoders.electrolink.monitoring.domain.model.queries.GetRatingsByRequestIdQuery;
 import com.hampcoders.electrolink.monitoring.domain.model.queries.GetRatingsByTechnicianIdQuery;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RatingId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RequestId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.TechnicianId;
-import com.hampcoders.electrolink.monitoring.domain.services.IRatingQueryService;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.RequestId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.TechnicianId;
+import com.hampcoders.electrolink.monitoring.domain.services.RatingQueryService;
 import com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories.RatingRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
+/**
+ * Implementation of the query service for Rating entities.
+ */
 @Service
-public class RatingQueryServiceImpl implements IRatingQueryService {
+public class RatingQueryServiceImpl implements RatingQueryService {
 
   private final RatingRepository ratingRepository;
 
@@ -24,21 +25,45 @@ public class RatingQueryServiceImpl implements IRatingQueryService {
     this.ratingRepository = ratingRepository;
   }
 
+  /**
+   * Handles the query to retrieve all ratings.
+   *
+   * @param query The query object (placeholder).
+   * @return A list of all Rating entities.
+   */
   @Override
   public List<Rating> handle(GetAllRatingsQuery query) {
     return ratingRepository.findAll();
   }
 
+  /**
+   * Handles the query to retrieve a rating by its ID.
+   *
+   * @param query The query object containing the rating ID.
+   * @return An Optional containing the Rating entity, or empty if not found.
+   */
   @Override
   public Optional<Rating> handle(GetRatingByIdQuery query) {
-    return ratingRepository.findById(new RatingId(query.ratingId()));
+    return ratingRepository.findById(query.ratingId());
   }
 
+  /**
+   * Handles the query to retrieve all ratings associated with a specific request ID.
+   *
+   * @param query The query object containing the request ID.
+   * @return A list of Rating entities matching the request ID.
+   */
   @Override
   public List<Rating> handle(GetRatingsByRequestIdQuery query) {
     return ratingRepository.findByRequestId(new RequestId(query.requestId()));
   }
 
+  /**
+   * Handles the query to retrieve all ratings given by a specific technician ID.
+   *
+   * @param query The query object containing the technician ID.
+   * @return A list of Rating entities matching the technician ID.
+   */
   @Override
   public List<Rating> handle(GetRatingsByTechnicianIdQuery query) {
     return ratingRepository.findByTechnicianId(new TechnicianId(query.technicianId()));
