@@ -63,7 +63,8 @@ public class RequestCommandServiceImplTest {
 
     var command = new CreateRequestCommand(resource);
 
-    when(requestRepository.save(any(Request.class))).thenAnswer(invocation -> invocation.getArgument(0));
+    when(requestRepository.save(any(Request.class)))
+            .thenAnswer(invocation -> invocation.getArgument(0));
 
     // Act
     Request result = requestCommandService.handle(command);
@@ -74,8 +75,10 @@ public class RequestCommandServiceImplTest {
     assertEquals("TECH-001", result.getTechnicianId(), "Technician ID should match");
     assertEquals("PROP-456", result.getPropertyId(), "Property ID should match");
     assertEquals("SVC-789", result.getServiceId(), "Service ID should match");
-    assertEquals("Air conditioner not cooling properly", result.getProblemDescription(), "Problem description should match");
-    assertEquals(LocalDate.of(2024, 10, 15), result.getScheduledDate(), "Scheduled date should match");
+    assertEquals("Air conditioner not cooling properly", result.getProblemDescription(),
+            "Problem description should match");
+    assertEquals(LocalDate.of(2024, 10, 15), result.getScheduledDate(),
+            "Scheduled date should match");
     assertNotNull(result.getBill(), "Bill should not be null");
     assertEquals(1, result.getPhotos().size(), "Should have 1 photo");
 
@@ -107,7 +110,8 @@ public class RequestCommandServiceImplTest {
 
     var command = new CreateRequestCommand(resource);
 
-    when(requestRepository.save(any(Request.class))).thenAnswer(invocation -> invocation.getArgument(0));
+    when(requestRepository.save(any(Request.class)))
+            .thenAnswer(invocation -> invocation.getArgument(0));
 
     // Act
     Request result = requestCommandService.handle(command);
@@ -116,7 +120,8 @@ public class RequestCommandServiceImplTest {
     assertNotNull(result, "Result should not be null");
     assertEquals("CLIENT-999", result.getClientId(), "Client ID should match");
     assertEquals("TECH-002", result.getTechnicianId(), "Technician ID should match");
-    assertTrue(result.getPhotos().isEmpty() || result.getPhotos().size() == 0, "Photos should be empty");
+    assertTrue(result.getPhotos().isEmpty() || result.getPhotos().size() == 0,
+            "Photos should be empty");
 
     verify(requestRepository, times(1)).save(any(Request.class));
     verifyNoMoreInteractions(requestRepository);
@@ -130,7 +135,8 @@ public class RequestCommandServiceImplTest {
     // Arrange
     Long requestId = 1L;
 
-    BillResource originalBill = new BillResource("2024-09", 100.0, 50.0, "https://example.com/old-bill.jpg");
+    BillResource originalBill = new BillResource("2024-09", 100.0,
+            50.0, "https://example.com/old-bill.jpg");
     CreateRequestResource originalResource = new CreateRequestResource(
         "CLIENT-100",
         "TECH-100",
@@ -153,7 +159,8 @@ public class RequestCommandServiceImplTest {
         null
     );
 
-    BillResource updatedBill = new BillResource("2024-10", 150.0, 75.0, "https://example.com/new-bill.jpg");
+    BillResource updatedBill = new BillResource("2024-10", 150.0,
+            75.0, "https://example.com/new-bill.jpg");
     CreateRequestResource updatedResource = new CreateRequestResource(
         "CLIENT-999",
         "TECH-999",
@@ -179,8 +186,10 @@ public class RequestCommandServiceImplTest {
     assertEquals("TECH-999", existingRequest.getTechnicianId(), "Technician ID should be updated");
     assertEquals("PROP-999", existingRequest.getPropertyId(), "Property ID should be updated");
     assertEquals("SVC-999", existingRequest.getServiceId(), "Service ID should be updated");
-    assertEquals("Updated problem description", existingRequest.getProblemDescription(), "Problem description should be updated");
-    assertEquals(LocalDate.of(2024, 10, 20), existingRequest.getScheduledDate(), "Scheduled date should be updated");
+    assertEquals("Updated problem description", existingRequest.getProblemDescription(),
+            "Problem description should be updated");
+    assertEquals(LocalDate.of(2024, 10, 20), existingRequest.getScheduledDate(),
+            "Scheduled date should be updated");
 
     verify(requestRepository, times(1)).findById(requestId);
     verify(requestRepository, times(1)).save(existingRequest);
@@ -193,7 +202,8 @@ public class RequestCommandServiceImplTest {
     // Arrange
     Long requestId = 999L;
 
-    BillResource billResource = new BillResource("2024-10", 150.0, 75.0, "https://example.com/bill.jpg");
+    BillResource billResource = new BillResource("2024-10", 150.0,
+            75.0, "https://example.com/bill.jpg");
     CreateRequestResource resource = new CreateRequestResource(
         "CLIENT-001",
         "TECH-001",

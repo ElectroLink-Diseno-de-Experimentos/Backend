@@ -1,3 +1,6 @@
 package com.hampcoders.electrolink.sdp.domain.model.queries;
 
-public record GetAllServicesQuery() { }
+/**
+ * Represents a query to get all services.
+ */
+public record GetAllServicesQuery() {}

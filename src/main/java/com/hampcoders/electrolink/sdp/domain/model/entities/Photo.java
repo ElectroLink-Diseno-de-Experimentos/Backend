@@ -8,20 +8,31 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents a photo.
+ */
 @Entity
 @Getter
 @NoArgsConstructor
 public class Photo extends AuditableModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String photoId;
-    private String url;
+  private String photoId;
+  private String url;
 
-    public Photo(String photoId, String url) {
-        this.photoId = photoId;
-        this.url = url;
-    }
+  /**
+   * Constructor for Photo.
+   *
+   * @param photoId The ID of the photo.
+   *
+   * @param url The URL of the photo.
+   *
+   */
+  public Photo(String photoId, String url) {
+    this.photoId = photoId;
+    this.url = url;
+  }
 }

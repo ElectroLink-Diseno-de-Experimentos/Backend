@@ -106,7 +106,8 @@ public class ScheduleCommandServiceImplTest {
         "18:00"
     );
 
-    ScheduleAggregate existingSchedule = new ScheduleAggregate("TECH-001", "Monday", "09:00", "17:00");
+    ScheduleAggregate existingSchedule = new ScheduleAggregate
+            ("TECH-001", "Monday", "09:00", "17:00");
     when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(existingSchedule));
     when(scheduleRepository.save(any(ScheduleAggregate.class))).thenReturn(existingSchedule);
 
