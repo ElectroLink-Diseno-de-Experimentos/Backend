@@ -5,10 +5,9 @@ import com.hampcoders.electrolink.monitoring.domain.model.aggregates.ServiceOper
 import com.hampcoders.electrolink.monitoring.domain.model.commands.AddRatingCommand;
 import com.hampcoders.electrolink.monitoring.domain.model.commands.DeleteRatingCommand;
 import com.hampcoders.electrolink.monitoring.domain.model.commands.UpdateRatingCommand;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RatingId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RequestId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ServiceStatus;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.TechnicianId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.RequestId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.ServiceStatus;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.TechnicianId;
 import com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories.RatingRepository;
 import com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories.ServiceOperationRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -120,7 +119,7 @@ public class RatingCommandServiceImplTest {
     @DisplayName("handle(UpdateRatingCommand) should update score, comment and save (AAA)")
     void handle_UpdateRatingCommand_ShouldUpdateAndSave(){
         // Arrange
-        RatingId ratingId = new RatingId(10L);
+        Long ratingId = 10L;
         var newScore = 5;
         var newComment = "Updated comment.";
         var existingRating = mock(Rating.class);
@@ -146,7 +145,7 @@ public class RatingCommandServiceImplTest {
     @DisplayName("handle(UpdateRatingCommand) should throw IllegalArgumentException if Rating not found (AAA)")
     void handle_UpdateRatingCommand_ShouldThrowException_WhenNotFound(){
         // Arrange
-        RatingId ratingId = new RatingId(10L);
+        Long ratingId = 10L;
         when(ratingRepository.findById(eq(ratingId))).thenReturn(Optional.empty());
 
         var command = new UpdateRatingCommand(ratingId, 5, "Updated comment.");
@@ -171,7 +170,7 @@ public class RatingCommandServiceImplTest {
     @DisplayName("handle(DeleteRatingCommand) should delete Rating when found (AAA)")
     void handle_DeleteRatingCommand_ShouldDeleteRating(){
         // Arrange
-        RatingId ratingId = new RatingId(10L);
+        Long ratingId = 10L;
         var existingRating = mock(Rating.class);
 
         when(ratingRepository.findById(eq(ratingId))).thenReturn(Optional.of(existingRating));
@@ -192,13 +191,13 @@ public class RatingCommandServiceImplTest {
     @DisplayName("handle(DeleteRatingCommand) should throw IllegalArgumentException if Rating not found (AAA)")
     void handle_DeleteRatingCommand_ShouldThrowException_WhenNotFound(){
         // Arrange
-        RatingId ratingId = new RatingId(10L);
+        Long ratingId = 10L;
         when(ratingRepository.findById(eq(ratingId))).thenReturn(Optional.empty());
         var command = new DeleteRatingCommand(ratingId);
 
         // Act + Assert
         var ex = assertThrows(IllegalArgumentException.class, () -> {
-            ratingCommandService.handle(new DeleteRatingCommand(new RatingId(10L)));
+            ratingCommandService.handle(new DeleteRatingCommand(10L));
         }, "Debe lanzar IllegalArgumentException si no existe Rating.");
 
         assertTrue(ex.getMessage().contains("Rating not found"));
