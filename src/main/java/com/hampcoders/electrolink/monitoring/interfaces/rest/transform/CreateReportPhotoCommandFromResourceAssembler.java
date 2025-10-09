@@ -1,16 +1,23 @@
 package com.hampcoders.electrolink.monitoring.interfaces.rest.transform;
 
 import com.hampcoders.electrolink.monitoring.domain.model.commands.AddPhotoCommand;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportPhotoId;
 import com.hampcoders.electrolink.monitoring.interfaces.rest.resources.CreateReportPhotoResource;
 
+/**
+ * Assembler responsible for converting {@link CreateReportPhotoResource} objects
+ * into {@link AddPhotoCommand} objects.
+ */
 public class CreateReportPhotoCommandFromResourceAssembler {
 
+  /**
+   * Converts a CreateReportPhotoResource into an AddPhotoCommand.
+   *
+   * @param resource The resource object containing report photo creation data.
+   * @return The corresponding AddPhotoCommand.
+   */
   public static AddPhotoCommand toCommandFromResource(CreateReportPhotoResource resource) {
     return new AddPhotoCommand(
-        new ReportPhotoId(), // genera el ID de la foto del reporte
-        new ReportId(resource.reportId()),
+        resource.reportId(),
         resource.url()
     );
   }
