@@ -5,41 +5,68 @@ import com.hampcoders.electrolink.assets.domain.model.commands.UpdateComponentTy
 import com.hampcoders.electrolink.assets.domain.model.valueobjects.ComponentTypeId;
 import com.hampcoders.electrolink.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import com.hampcoders.electrolink.shared.domain.model.aggregates.AuditableAbstractAggregateRootNoId;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 
+/**
+ * Represents a type or category of component in the system.
+ */
 @Entity
-@Table(name="component_types")
+@Table(name = "component_types")
 @Getter
 public class ComponentType extends AuditableAbstractAggregateRootNoId<ComponentType> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+  @Column(name = "name", nullable = false)
+  private String name;
 
-    @Column(name = "description")
-    private String description;
+  @Column(name = "description")
+  private String description;
 
-    protected ComponentType() {
+  /**
+   * Protected default constructor for JPA.
+   */
+  protected ComponentType() {
 
-    }
+  }
 
-    public ComponentType(CreateComponentTypeCommand command){
-        this();
-        this.name = command.name();
-        this.description = command.description();
-    }
+  /**
+   * Constructs a ComponentType from a creation command.
+   *
+   * @param command The command containing the name and description.
+   */
+  public ComponentType(final CreateComponentTypeCommand command) {
+    this();
+    this.name = command.name();
+    this.description = command.description();
+  }
 
-    public void update(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
+  /**
+   * Updates the name and description of the component type.
+   *
+   * @param name The new name.
+   * @param description The new description.
+   */
+  public void update(final String name, final String description) {
+    this.name = name;
+    this.description = description;
+  }
 
-    public void updateName(UpdateComponentTypeCommand command) {
-        this.name = command.name();
-    }
+  /**
+   * Updates only the name of the component type from an update command.
+   *
+   * @param command The command containing the new name.
+   */
+  public void updateName(final UpdateComponentTypeCommand command) {
+    this.name = command.name();
+  }
 
 }
