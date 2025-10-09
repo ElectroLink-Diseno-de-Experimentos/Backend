@@ -1,10 +1,9 @@
 package com.hampcoders.electrolink.monitoring.domain.model.valueobjects;
 
 import jakarta.persistence.Embeddable;
-import lombok.Getter;
-
 import java.io.Serializable;
 import java.util.Objects;
+import lombok.Getter;
 
 /**
  * Value object representing the identifier of a technician.
