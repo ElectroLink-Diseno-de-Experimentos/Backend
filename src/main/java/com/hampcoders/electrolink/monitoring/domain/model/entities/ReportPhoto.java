@@ -1,41 +1,41 @@
 package com.hampcoders.electrolink.monitoring.domain.model.entities;
 
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportPhotoId;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 
+/**
+ * Represents a photo associated with a specific Report.
+ * This is an entity owned by the Report Aggregate.
+ */
 @Entity
-@Table(name = "report_photos")
+@Table
 public class ReportPhoto {
 
-  @EmbeddedId
-  @AttributeOverride(name = "id", column = @Column(name = "report_photo_id", nullable = false))
-  private ReportPhotoId id = new ReportPhotoId();
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(nullable = false)
+  @Getter
+  private Long id;
 
   @Getter
-  @Embedded
-  @AttributeOverride(name = "value", column = @Column(name = "report_id", nullable = false))
-  private ReportId reportId;
+  @Column(nullable = false)
+  private Long reportId;
 
   @Getter
-  @Column(name = "url", nullable = false)
+  @Column(nullable = false)
   private String url;
 
-  public ReportPhoto(ReportPhotoId reportPhotoId, ReportId reportId, String url) {
-    this.id = reportPhotoId;
+  public ReportPhoto(Long reportId, String url) {
     this.reportId = reportId;
     this.url = url;
   }
 
-  protected ReportPhoto() {}
-
-  public ReportPhotoId reportPhotoId() {
-    return id;
+  protected ReportPhoto() {
+    // Required by JPA
   }
-
-  public ReportPhotoId getId() {
-    return id;
-  }
-
 }
