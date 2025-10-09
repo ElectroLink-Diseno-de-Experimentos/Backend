@@ -1,7 +1,6 @@
 package com.hampcoders.electrolink.monitoring.interfaces.rest.transform;
 
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportType;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RequestId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.ReportType;
 import com.hampcoders.electrolink.monitoring.interfaces.rest.resources.CreateReportResource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,18 +12,18 @@ public class CreateReportCommandFromResourceAssemblerTest {
     @DisplayName("toCommandFromResource should correctly map CreateReportResource to AddReportCommand (AAA)")
     void toCommandFromResource_ShouldMapResourceToCommand() {
         // Arrange
-        Long requestId = 100L;
+        Long serviceOperationId = 100L;
         String reportType = "INCIDENT";
         String description = "Initial diagnostic run on the main transformer.";
 
-        var resource = new CreateReportResource(requestId, reportType, description);
+        var resource = new CreateReportResource(serviceOperationId, reportType, description);
 
         // Act
         var command = CreateReportCommandFromResourceAssembler.toCommandFromResource(resource);
 
         // Assert
         assertNotNull(command, "El comando retornado no debe ser nulo.");
-        assertEquals(new RequestId(requestId), command.requestId(),
+        assertEquals(serviceOperationId, command.serviceOperationId(),
                 "El RequestId debe ser mapeado y envuelto en un Value Object.");
         assertEquals(ReportType.INCIDENT, command.reportType(),
                 "El tipo de reporte debe ser mapeado y convertido al enum ReportType.");

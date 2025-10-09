@@ -1,8 +1,6 @@
 package com.hampcoders.electrolink.monitoring.interfaces.rest.transform;
 
 import com.hampcoders.electrolink.monitoring.domain.model.entities.ReportPhoto;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportPhotoId;
 import com.hampcoders.electrolink.monitoring.interfaces.rest.resources.ReportPhotoResource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,17 +16,11 @@ public class ReportPhotoResourceFromEntityAssemblerTest {
         // Arrange
         Long photoId = 77L;
         Long reportId = 88L;
-        String url = "http://storage.electrolink.com/photos/xyz.jpg";
-
-        var photoIdVo = mock(ReportPhotoId.class);
-        when(photoIdVo.getId()).thenReturn(photoId);
-
-        var reportIdVo = mock(ReportId.class);
-        when(reportIdVo.getId()).thenReturn(reportId);
+        String url = "https://storage.electrolink.com/photos/xyz.jpg";
 
         var entity = mock(ReportPhoto.class);
-        when(entity.getId()).thenReturn(photoIdVo);
-        when(entity.getReportId()).thenReturn(reportIdVo);
+        when(entity.getId()).thenReturn(photoId);
+        when(entity.getReportId()).thenReturn(reportId);
         when(entity.getUrl()).thenReturn(url);
 
         // Act
@@ -44,8 +36,6 @@ public class ReportPhotoResourceFromEntityAssemblerTest {
         verify(entity).getId();
         verify(entity).getReportId();
         verify(entity).getUrl();
-        verify(photoIdVo).getId();
-        verify(reportIdVo).getId();
-        verifyNoMoreInteractions(entity, photoIdVo, reportIdVo);
+        verifyNoMoreInteractions(entity);
     }
 }
