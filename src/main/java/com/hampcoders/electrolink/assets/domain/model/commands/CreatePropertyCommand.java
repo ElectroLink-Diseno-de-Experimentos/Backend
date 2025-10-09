@@ -5,5 +5,9 @@ import com.hampcoders.electrolink.assets.domain.model.valueobjects.District;
 import com.hampcoders.electrolink.assets.domain.model.valueobjects.OwnerId;
 import com.hampcoders.electrolink.assets.domain.model.valueobjects.Region;
 
-public record CreatePropertyCommand(OwnerId ownerId, Address address, Region region, District district) {
+/**
+ * Command to create a new property.
+ */
+public record CreatePropertyCommand(OwnerId ownerId, Address address, Region region,
+                                    District district) {
 }
