@@ -2,8 +2,6 @@ package com.hampcoders.electrolink.monitoring.application.internal.queryservices
 
 import com.hampcoders.electrolink.monitoring.domain.model.aggregates.Report;
 import com.hampcoders.electrolink.monitoring.domain.model.queries.*;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RequestId;
 import com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories.ReportRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,7 +50,7 @@ public class ReportQueryServiceImplTest {
     @DisplayName("handle(GetReportByIdQuery) should return the Report from repository (AAA)")
     void handle_GetReportByIdQuery_ShouldReturnReport() {
         // Arrange
-        ReportId reportId = new ReportId(10L);
+        Long reportId = 10L;
         Report expected = mock(Report.class);
 
         when(reportRepository.findById(eq(reportId))).thenReturn(Optional.of(expected));
@@ -72,7 +70,7 @@ public class ReportQueryServiceImplTest {
     @DisplayName("handle(GetReportByIdQuery) should return empty Optional when not found (AAA)")
     void handle_GetReportByIdQuery_ShouldReturnEmptyOptionalWhenNotFound() {
         // Arrange
-        ReportId reportId = new ReportId(11L);
+        Long reportId = 11L;
 
         when(reportRepository.findById(eq(reportId))).thenReturn(Optional.empty());
         var query = new GetReportByIdQuery(11L);
@@ -90,12 +88,12 @@ public class ReportQueryServiceImplTest {
     @DisplayName("handle(GetReportsByRequestIdQuery) should return list filtered by RequestId (AAA)")
     void handle_GetReportsByRequestIdQuery_ShouldReturnReportsForRequest() {
         // Arrange
-        var requestId = new RequestId(12L);
+        var serviceOperationId = 12L;
         var a = mock(Report.class);
         var b = mock(Report.class);
 
-        when(reportRepository.findByRequestId(eq(requestId))).thenReturn(List.of(a, b));
-        var query = new GetReportsByRequestIdQuery(12L);
+        when(reportRepository.findByServiceOperationId(eq(serviceOperationId))).thenReturn(List.of(a, b));
+        var query = new GetReportsByServiceOperationIdQuery(12L);
 
         // Act
         var actual = reportQueryService.handle(query);
@@ -103,7 +101,7 @@ public class ReportQueryServiceImplTest {
         // Assert
         assertEquals(2, actual.size(), "Must return a list with 2 Reports.");
         assertSame(a, actual.getFirst());
-        verify(reportRepository).findByRequestId(requestId);
+        verify(reportRepository).findByServiceOperationId(serviceOperationId);
         verifyNoMoreInteractions(reportRepository);
     }
 }

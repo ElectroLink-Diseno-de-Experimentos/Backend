@@ -1,9 +1,9 @@
 package com.hampcoders.electrolink.monitoring.interfaces.rest.transform;
 
 import com.hampcoders.electrolink.monitoring.domain.model.aggregates.ServiceOperation;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RequestId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ServiceStatus;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.TechnicianId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.RequestId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.ServiceStatus;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.TechnicianId;
 import com.hampcoders.electrolink.monitoring.interfaces.rest.resources.ServiceOperationResource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +18,7 @@ public class ServiceOperationResourceFromEntityAssemblerTest {
     @DisplayName("toResourceFromEntity should map a COMPLETED ServiceOperation entity to ServiceOperationResource (AAA)")
     void toResourceFromEntity_ShouldMapCompletedEntityToResource() {
         // Arrange
+        Long serviceOperationId = 100L;
         Long requestId = 10L;
         Long technicianId = 20L;
         OffsetDateTime startedAt = OffsetDateTime.parse("2025-10-05T09:00:00Z");
@@ -28,9 +29,10 @@ public class ServiceOperationResourceFromEntityAssemblerTest {
         when(requestIdVo.getId()).thenReturn(requestId);
 
         var technicianIdVo = mock(TechnicianId.class);
-        when(technicianIdVo.getId()).thenReturn(technicianId);
+        when(technicianIdVo.getTechnicianId()).thenReturn(technicianId);
 
         ServiceOperation entity = mock(ServiceOperation.class);
+        when(entity.getId()).thenReturn(serviceOperationId);
         when(entity.getRequestId()).thenReturn(requestIdVo);
         when(entity.getTechnicianId()).thenReturn(technicianIdVo);
         when(entity.getStartedAt()).thenReturn(startedAt);
@@ -43,19 +45,21 @@ public class ServiceOperationResourceFromEntityAssemblerTest {
         // Assert
         assertNotNull(resource, "El recurso retornado no debe ser nulo.");
 
+        assertEquals(serviceOperationId, resource.id(), "El ID del servicio debe coincidir.");
         assertEquals(requestId, resource.requestId(), "El RequestId (Long) debe coincidir.");
         assertEquals(technicianId, resource.technicianId(), "El TechnicianId (Long) debe coincidir.");
         assertEquals(startedAt, resource.startedAt(), "La fecha de inicio debe coincidir.");
         assertEquals(completedAt, resource.completedAt(), "La fecha de finalización debe coincidir.");
         assertEquals(status.name(), resource.currentStatus(), "El estado debe convertirse a su nombre String.");
 
+        verify(entity).getId();
         verify(entity).getRequestId();
         verify(entity).getTechnicianId();
         verify(entity).getStartedAt();
         verify(entity).getCompletedAt();
         verify(entity).getCurrentStatus();
         verify(requestIdVo).getId();
-        verify(technicianIdVo).getId();
+        verify(technicianIdVo).getTechnicianId();
         verifyNoMoreInteractions(entity, requestIdVo, technicianIdVo);
     }
 }

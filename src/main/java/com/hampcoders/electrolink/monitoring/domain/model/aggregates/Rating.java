@@ -1,64 +1,83 @@
 package com.hampcoders.electrolink.monitoring.domain.model.aggregates;
 
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RequestId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.TechnicianId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.RequestId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.TechnicianId;
 import com.hampcoders.electrolink.shared.domain.model.aggregates.AuditableAbstractAggregateRootNoId;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
+/**
+ * Represents a user rating for a completed service operation.
+ * It is an Aggregate Root within the Monitoring context.
+ */
 @Entity
-@Table(name = "ratings")
+@Table
 public class Rating extends AuditableAbstractAggregateRootNoId<Rating> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "rating_id", nullable = false, updatable = false)
+  @Column(nullable = false, updatable = false)
   @Getter
   private Long id;
 
   @Getter
   @Embedded
-  @AttributeOverride(name = "id", column = @Column(name = "request_id", nullable = false))
+  @Column(nullable = false)
   private RequestId requestId;
 
   @Getter
   @NotNull
   @Min(1)
   @Max(5)
-  @Column(name = "score", nullable = false)
+  @Column(nullable = false)
   private Integer score;
 
   @Getter
   @Size(max = 300)
-  @Column(name = "comment")
+  @Column
   private String comment;
 
   @Getter
   @NotBlank
-  @Column(name = "rater_id", nullable = false)
+  @Column(nullable = false)
   private String raterId;
 
   @Getter
   @Embedded
-  @AttributeOverride(name = "id", column = @Column(name = "technician_id", nullable = false))
+  @Column(nullable = false)
   private TechnicianId technicianId;
 
   protected Rating() {
     // Required by JPA
   }
 
-  public Rating(RequestId requestId, Integer score, String comment, String raterId, TechnicianId technicianId) {
+  /**
+   * Constructs a new Rating aggregate.
+   *
+   * @param requestId The ID of the service operation being rated.
+   * @param score The rating score (1 to 5).
+   * @param comment The optional comment.
+   * @param raterId The ID of the user providing the rating.
+   * @param technicianId The ID of the technician who performed the service.
+   */
+  public Rating(RequestId requestId, Integer score, String comment,
+                String raterId, TechnicianId technicianId) {
     this.requestId = requestId;
     this.score = score;
     this.comment = comment;
     this.raterId = raterId;
     this.technicianId = technicianId;
-  }
-
-  public Long getRatingId() {
-    return id;
   }
 
   public void updateScore(int score) {

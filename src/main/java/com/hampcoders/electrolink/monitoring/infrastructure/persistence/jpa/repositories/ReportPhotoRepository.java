@@ -4,8 +4,9 @@ import com.hampcoders.electrolink.monitoring.domain.model.entities.ReportPhoto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
+/**
+ * JPA Repository for the {@link ReportPhoto} entity.
+ */
 @Repository
 public interface ReportPhotoRepository extends JpaRepository<ReportPhoto, Long> {
 }

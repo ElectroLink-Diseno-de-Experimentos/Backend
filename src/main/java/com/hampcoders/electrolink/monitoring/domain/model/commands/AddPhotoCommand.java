@@ -1,8 +1,11 @@
 package com.hampcoders.electrolink.monitoring.domain.model.commands;
 
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportPhotoId;
-
-public record AddPhotoCommand(ReportPhotoId reportPhotoId, ReportId reportId, String url) {
+/**
+ * Command to add a new photo to an existing report.
+ *
+ * @param reportId The ID of the report the photo belongs to.
+ * @param url The URL where the photo is stored.
+ */
+public record AddPhotoCommand(Long reportId, String url) {
 
 }

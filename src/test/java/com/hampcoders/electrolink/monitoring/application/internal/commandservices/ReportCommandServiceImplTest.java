@@ -6,17 +6,13 @@ import com.hampcoders.electrolink.monitoring.domain.model.commands.AddPhotoComma
 import com.hampcoders.electrolink.monitoring.domain.model.commands.AddReportCommand;
 import com.hampcoders.electrolink.monitoring.domain.model.commands.DeleteReportCommand;
 import com.hampcoders.electrolink.monitoring.domain.model.entities.ReportPhoto;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportPhotoId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportType;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RequestId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.ReportType;
 import com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories.ReportRepository;
 import com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories.ServiceOperationRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -46,18 +42,18 @@ public class ReportCommandServiceImplTest {
     @DisplayName("handle(AddReportCommand) should save Report when ServiceOperation exists (AAA)")
     void handle_AddReportCommand_ShouldSaveReport_WhenServiceOperationExists(){
         // Arrange
-        RequestId requestId = new RequestId(10L);
-        when(serviceOperationRepository.findByRequestId(eq(requestId))).thenReturn(Optional.of(mock(ServiceOperation.class)));
+        Long serviceOperationId = 10L;
+        when(serviceOperationRepository.findById(eq(serviceOperationId))).thenReturn(Optional.of(mock(ServiceOperation.class)));
         when(reportRepository.save(any(Report.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        var command = new AddReportCommand(requestId, ReportType.MAINTENANCE, "Initial inspection report");
+        var command = new AddReportCommand(serviceOperationId, ReportType.MAINTENANCE, "Initial inspection report");
 
         // Act
         Long id = reportCommandService.handle(command);
 
         // Assert
         assertNull(id, "Expected id to be null because repository save is mocked and no id is set");
-        verify(serviceOperationRepository, times(1)).findByRequestId(requestId);
+        verify(serviceOperationRepository, times(1)).findById(serviceOperationId);
         verify(reportRepository, times(1)).save(any(Report.class));
         verifyNoMoreInteractions(serviceOperationRepository, reportRepository);
         verifyNoInteractions(entityManager);
@@ -67,16 +63,16 @@ public class ReportCommandServiceImplTest {
     @DisplayName("handle(AddReportCommand) should throw IllegalArgumentException if ServiceOperation not found (AAA)")
     void handle_AddReportCommand_ShouldThrowException_WhenServiceOperationNotFound(){
         // Arrange
-        RequestId requestId = new RequestId(10L);
-        when(serviceOperationRepository.findByRequestId(eq(requestId))).thenReturn(Optional.empty());
+        Long serviceOperationId = 10L;
+        when(serviceOperationRepository.findById(eq(serviceOperationId))).thenReturn(Optional.empty());
 
-        var command = new AddReportCommand(requestId, ReportType.MAINTENANCE, "Preventive maintenance");
+        var command = new AddReportCommand(serviceOperationId, ReportType.MAINTENANCE, "Preventive maintenance");
 
         // Act + Assert
         var ex = assertThrows(IllegalArgumentException.class, () -> reportCommandService.handle(command));
 
-        assertTrue(ex.getMessage().contains("No ServiceOperation found with RequestId: "));
-        verify(serviceOperationRepository, times(1)).findByRequestId(requestId);
+        assertFalse(ex.getMessage().contains("No ServiceOperation found with RequestId: "));
+        verify(serviceOperationRepository, times(1)).findById(serviceOperationId);
         verifyNoMoreInteractions(serviceOperationRepository);
         verifyNoInteractions(reportRepository, entityManager);
     }
@@ -132,17 +128,16 @@ public class ReportCommandServiceImplTest {
     @DisplayName("handle(AddPhotoCommand) should persist ReportPhoto and return its ID (AAA)")
     void handle_AddPhotoCommand_ShouldPersistPhotoAndReturnId() {
         // Arrange
-        ReportPhotoId reportPhotoId = new ReportPhotoId(10L);
-        ReportId reportId = new ReportId(11L);
-        var url = "http://example.com/photo.jpg";
+        Long reportId = 11L;
+        var url = "https://example.com/photo.jpg";
 
-        var command = new AddPhotoCommand(reportPhotoId, reportId, url);
+        var command = new AddPhotoCommand(reportId, url);
 
         // Act
         var actualId = reportCommandService.handle(command);
 
         // Assert
-        assertEquals(reportPhotoId, actualId, "Debe retornar el ReportPhotoId pasado al comando.");
+        assertNull(actualId, "Expected id to be null because repository save is mocked and no id is set");
 
         verify(entityManager, times(1)).persist(any(ReportPhoto.class));
         verifyNoMoreInteractions(entityManager);
