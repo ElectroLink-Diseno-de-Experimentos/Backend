@@ -5,36 +5,51 @@ import com.hampcoders.electrolink.monitoring.domain.model.commands.AddPhotoComma
 import com.hampcoders.electrolink.monitoring.domain.model.commands.AddReportCommand;
 import com.hampcoders.electrolink.monitoring.domain.model.commands.DeleteReportCommand;
 import com.hampcoders.electrolink.monitoring.domain.model.entities.ReportPhoto;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportPhotoId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportType;
-import com.hampcoders.electrolink.monitoring.domain.services.IReportCommandService;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.ReportType;
+import com.hampcoders.electrolink.monitoring.domain.services.ReportCommandService;
 import com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories.ReportRepository;
 import com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories.ServiceOperationRepository;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementation of the command service for Report entities.
+ */
 @Service
-public class ReportCommandServiceImpl implements IReportCommandService {
+public class ReportCommandServiceImpl implements ReportCommandService {
 
   private final ServiceOperationRepository serviceOperationRepository;
   private final ReportRepository reportRepository;
   private final EntityManager entityManager;
 
-  public ReportCommandServiceImpl(ReportRepository reportRepository, EntityManager entityManager, ServiceOperationRepository serviceOperationRepository) {
+  /**
+   * Constructor for ReportCommandServiceImpl.
+   *
+   * @param reportRepository The repository for managing Report entities.
+   * @param entityManager The JPA EntityManager for managing ReportPhoto persistence.
+   * @param serviceOperationRepository The repository for validating ServiceOperation existence.
+   */
+  public ReportCommandServiceImpl(ReportRepository reportRepository, EntityManager entityManager,
+                                  ServiceOperationRepository serviceOperationRepository) {
     this.reportRepository = reportRepository;
     this.entityManager = entityManager;
     this.serviceOperationRepository = serviceOperationRepository;
   }
 
+  /**
+   * Handles the creation of a new report.
+   *
+   * @param command The command containing report details.
+   * @return The ID of the created report.
+   */
   @Override
   public Long handle(AddReportCommand command) {
-    // Validar que el requestId esté asociado a una ServiceOperation existente
-    serviceOperationRepository.findByRequestId(command.requestId())
-        .orElseThrow(() -> new IllegalArgumentException("No ServiceOperation found with RequestId: " + command.requestId().getId()));
+    serviceOperationRepository.findById(command.serviceOperationId())
+        .orElseThrow(() -> new IllegalArgumentException(
+            "No ServiceOperation found with id: " + command.serviceOperationId()));
 
-    // Crear el reporte si pasa la validación
     var report = new Report(
-        command.requestId(),
+        command.serviceOperationId(),
         ReportType.valueOf(String.valueOf(command.reportType())),
         command.description()
     );
@@ -42,6 +57,11 @@ public class ReportCommandServiceImpl implements IReportCommandService {
     return report.getId();
   }
 
+  /**
+   * Handles the deletion of an existing report.
+   *
+   * @param command The command containing the report ID to delete.
+   */
   @Override
   public void handle(DeleteReportCommand command) {
     var report = reportRepository.findById(command.reportId())
@@ -49,14 +69,19 @@ public class ReportCommandServiceImpl implements IReportCommandService {
     reportRepository.delete(report);
   }
 
+  /**
+   * Handles the addition of a new photo to a report.
+   *
+   * @param command The command containing photo details.
+   * @return The ID of the created report photo.
+   */
   @Override
-  public ReportPhotoId handle(AddPhotoCommand command) {
+  public Long handle(AddPhotoCommand command) {
     var reportPhoto = new ReportPhoto(
-        command.reportPhotoId(),
         command.reportId(),
         command.url()
     );
     entityManager.persist(reportPhoto);
-    return reportPhoto.reportPhotoId();
+    return reportPhoto.getId();
   }
 }
