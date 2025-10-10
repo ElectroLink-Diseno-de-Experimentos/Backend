@@ -6,7 +6,7 @@ import com.hampcoders.electrolink.profiles.domain.model.commands.DeleteProfileCo
 import com.hampcoders.electrolink.profiles.domain.model.commands.UpdateProfileCommand;
 import com.hampcoders.electrolink.profiles.domain.model.valueobjects.Role;
 import com.hampcoders.electrolink.profiles.infrastructure.persistence.jpa.repositories.ProfileRepository;
-import com.hampcoders.electrolink.profiles.application.internal.outboundservices.IExternalAssetsService;
+import com.hampcoders.electrolink.profiles.application.internal.outboundservices.ExternalAssetsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,7 +25,7 @@ class ProfileCommandServiceImplTest {
     @Mock
     private ProfileRepository profileRepository;
     @Mock
-    private IExternalAssetsService externalAssetsService;
+    private ExternalAssetsService externalAssetsService;
     @InjectMocks
     private ProfileCommandServiceImpl service;
 
