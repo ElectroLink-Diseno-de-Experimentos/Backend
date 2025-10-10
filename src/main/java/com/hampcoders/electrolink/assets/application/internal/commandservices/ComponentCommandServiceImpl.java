@@ -7,43 +7,51 @@ import com.hampcoders.electrolink.assets.domain.model.commands.UpdateComponentCo
 import com.hampcoders.electrolink.assets.domain.model.valueobjects.ComponentId;
 import com.hampcoders.electrolink.assets.domain.services.ComponentCommandService;
 import com.hampcoders.electrolink.assets.infrastructure.persistence.jpa.repositories.ComponentRepository;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
+/**
+ * Component command service implementation.
+ */
 @Service
 public class ComponentCommandServiceImpl implements ComponentCommandService {
 
-    private final ComponentRepository componentRepository;
+  private final ComponentRepository componentRepository;
 
-    public ComponentCommandServiceImpl(ComponentRepository componentRepository) {
-        this.componentRepository = componentRepository;
+  /**
+   * Constructs a ComponentCommandServiceImpl.
+   *
+   * @param componentRepository The component repository.
+   */
+  public ComponentCommandServiceImpl(final ComponentRepository componentRepository) {
+    this.componentRepository = componentRepository;
+  }
+
+  @Override
+  public ComponentId handle(final CreateComponentCommand command) {
+    if (componentRepository.existsByName(command.name())) {
+      throw new IllegalStateException("Component with the same name already exists");
     }
+    final var component = new Component(command);
+    final var savedComponent = componentRepository.save(component);
+    return new ComponentId(savedComponent.getComponentUid());
+  }
 
-    @Override
-    public ComponentId handle(CreateComponentCommand command) {
-        if (componentRepository.existsByName(command.name())) {
-            throw new IllegalStateException("Component with the same name already exists");
-        }
-        var component = new Component(command);
-        var savedComponent = componentRepository.save(component);
-        return new ComponentId(savedComponent.getComponentUid());
-    }
-
-    @Override
-    public Optional<Component> handle(UpdateComponentCommand command) {
-        return componentRepository.findById(command.componentId()).map(component -> {
-            component.updateInfo(command.name(), command.description());
-            return componentRepository.save(component);
+  @Override
+  public Optional<Component> handle(final UpdateComponentCommand command) {
+    return componentRepository.findById(command.componentId())
+        .map(component -> {
+          component.updateInfo(command.name(), command.description());
+          return componentRepository.save(component);
         });
-    }
+  }
 
-    @Override
-    public Boolean handle(DeleteComponentCommand command) {
-        if (!componentRepository.existsById(command.componentId())) {
-            return false;
-        }
-        componentRepository.deleteById(command.componentId());
-        return true;
+  @Override
+  public Boolean handle(final DeleteComponentCommand command) {
+    if (!componentRepository.existsById(command.componentId())) {
+      return false;
     }
+    componentRepository.deleteById(command.componentId());
+    return true;
+  }
 }
