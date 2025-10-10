@@ -15,7 +15,7 @@ public interface ServiceOperationCommandService {
    * @param command The command containing the details for the new operation.
    * @return The RequestId of the newly created service operation.
    */
-  RequestId handle(CreateServiceOperationCommand command);
+  Long handle(CreateServiceOperationCommand command);
 
   /**
    * Handles the update of a service operation's status.

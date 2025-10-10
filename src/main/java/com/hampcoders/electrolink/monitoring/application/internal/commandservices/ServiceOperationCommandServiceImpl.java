@@ -29,7 +29,7 @@ public class ServiceOperationCommandServiceImpl implements ServiceOperationComma
    * @return The RequestId of the created service operation.
    */
   @Override
-  public RequestId handle(CreateServiceOperationCommand command) {
+  public Long handle(CreateServiceOperationCommand command) {
     var requestId = command.requestId();
 
     var serviceOperation = new ServiceOperation(
@@ -41,7 +41,7 @@ public class ServiceOperationCommandServiceImpl implements ServiceOperationComma
     );
 
     serviceOperationRepository.save(serviceOperation);
-    return requestId;
+    return serviceOperation.getId();
   }
 
   /**
