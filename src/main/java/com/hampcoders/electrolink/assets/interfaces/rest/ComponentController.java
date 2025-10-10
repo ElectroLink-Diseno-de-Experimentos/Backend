@@ -36,101 +36,101 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 @RequestMapping(value = "/api/v1/components", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ComponentController {
 
-    private final ComponentCommandService componentCommandService;
-    private final ComponentQueryService componentQueryService;
+  private final ComponentCommandService componentCommandService;
+  private final ComponentQueryService componentQueryService;
 
-    public ComponentController(ComponentCommandService componentCommandService, ComponentQueryService componentQueryService) {
-        this.componentCommandService = componentCommandService;
-        this.componentQueryService = componentQueryService;
+  public ComponentController(ComponentCommandService componentCommandService, ComponentQueryService componentQueryService) {
+    this.componentCommandService = componentCommandService;
+    this.componentQueryService = componentQueryService;
+  }
+
+  @Operation(summary = "Get a component by ID", description = "Retrieve a specific component using its unique identifier.")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "Component found"),
+      @ApiResponse(responseCode = "404", description = "Component not found")
+  })
+  @GetMapping("/{componentId}")
+  public ResponseEntity<ComponentResource> getComponentById(
+      @Parameter(description = "Long of the component to retrieve") @PathVariable Long componentId) {
+    var getComponentByIdQuery = new GetComponentByIdQuery(new ComponentId(componentId));
+    var component = componentQueryService.handle(getComponentByIdQuery);
+
+    return component.map(p -> new ResponseEntity<>(
+            ComponentResourceFromEntityAssembler.toResourceFromEntity(p), HttpStatus.OK))
+        .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
+
+  @Operation(summary = "Get all components", description = "Retrieve a list of all components.")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "List of components retrieved successfully")
+  })
+  @GetMapping
+  public ResponseEntity<List<ComponentResource>> getAllComponents() {
+    var getAllComponentsQuery = new GetAllComponentsQuery();
+    var components = componentQueryService.handle(getAllComponentsQuery);
+    var componentResources = components.stream()
+        .map(ComponentResourceFromEntityAssembler::toResourceFromEntity)
+        .toList();
+    return new ResponseEntity<>(componentResources, HttpStatus.OK);
+  }
+
+  @Operation(summary = "Create a new component", description = "Create a new component with the provided details.")
+  @ApiResponses({
+      @ApiResponse(responseCode = "201", description = "Component created successfully"),
+      @ApiResponse(responseCode = "400", description = "Invalid input data"),
+      @ApiResponse(responseCode = "500", description = "Internal server error")
+  })
+  @PostMapping
+  public ResponseEntity<ComponentResource> createComponent(
+      @Parameter(description = "Details of the component to create") @RequestBody @Valid CreateComponentResource resource) {
+    var createComponentCommand = CreateComponentCommandFromResourceAssembler.toCommandFromResource(resource);
+    var componentId = componentCommandService.handle(createComponentCommand);
+
+    if (componentId == null || componentId.componentId() == null) {
+      return ResponseEntity.badRequest().build();
     }
 
-    @Operation(summary = "Get a component by ID", description = "Retrieve a specific component using its unique identifier.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Component found"),
-        @ApiResponse(responseCode = "404", description = "Component not found")
-    })
-    @GetMapping("/{componentId}")
-    public ResponseEntity<ComponentResource> getComponentById(
-            @Parameter(description = "Long of the component to retrieve") @PathVariable Long componentId) {
-        var getComponentByIdQuery = new GetComponentByIdQuery(new ComponentId(componentId));
-        var component = componentQueryService.handle(getComponentByIdQuery);
+    var getComponentByIdQuery = new GetComponentByIdQuery(componentId);
+    var component = componentQueryService.handle(getComponentByIdQuery);
 
-        return component.map(p -> new ResponseEntity<>(
-                        ComponentResourceFromEntityAssembler.toResourceFromEntity(p), HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    if (component.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    @Operation(summary = "Get all components", description = "Retrieve a list of all components.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "List of components retrieved successfully")
-    })
-    @GetMapping
-    public ResponseEntity<List<ComponentResource>> getAllComponents() {
-        var getAllComponentsQuery = new GetAllComponentsQuery();
-        var components = componentQueryService.handle(getAllComponentsQuery);
-        var componentResources = components.stream()
-                .map(ComponentResourceFromEntityAssembler::toResourceFromEntity)
-                .toList();
-        return new ResponseEntity<>(componentResources, HttpStatus.OK);
-    }
+    var componentResource = ComponentResourceFromEntityAssembler.toResourceFromEntity(component.get());
+    return new ResponseEntity<>(componentResource, HttpStatus.CREATED);
+  }
 
-    @Operation(summary = "Create a new component", description = "Create a new component with the provided details.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "Component created successfully"),
-        @ApiResponse(responseCode = "400", description = "Invalid input data"),
-        @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    @PostMapping
-    public ResponseEntity<ComponentResource> createComponent(
-            @Parameter(description = "Details of the component to create") @RequestBody @Valid CreateComponentResource resource) {
-        var createComponentCommand = CreateComponentCommandFromResourceAssembler.toCommandFromResource(resource);
-        var componentId = componentCommandService.handle(createComponentCommand);
+  @Operation(summary = "Update an existing component", description = "Update the details of an existing component.")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "Component updated successfully"),
+      @ApiResponse(responseCode = "404", description = "Component not found")
+  })
+  @PutMapping("/{componentId}")
+  public ResponseEntity<ComponentResource> updateComponent(
+      @Parameter(description = "Long of the component to update") @PathVariable Long componentId,
+      @Parameter(description = "Updated details of the component") @RequestBody @Valid UpdateComponentResource resource) {
+    var updateComponentCommand = UpdateComponentCommandFromResourceAssembler.toCommandFromResource(componentId, resource);
+    var updatedComponent = componentCommandService.handle(updateComponentCommand);
 
-        if (componentId == null || componentId.componentId() == null) {
-            return ResponseEntity.badRequest().build();
-        }
+    return updatedComponent.map(component -> new ResponseEntity<>(
+            ComponentResourceFromEntityAssembler.toResourceFromEntity(component), HttpStatus.OK))
+        .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
 
-        var getComponentByIdQuery = new GetComponentByIdQuery(componentId);
-        var component = componentQueryService.handle(getComponentByIdQuery);
+  @Operation(summary = "Delete a component", description = "Delete a specific component using its unique identifier.")
+  @ApiResponses({
+      @ApiResponse(responseCode = "204", description = "Component deleted successfully"),
+      @ApiResponse(responseCode = "404", description = "Component not found")
+  })
+  @DeleteMapping("/{componentId}")
+  public ResponseEntity<Void> deleteComponent(
+      @Parameter(description = "Long of the component to delete") @PathVariable Long componentId) {
+    var deleteComponentCommand = new DeleteComponentCommand(componentId);
+    Boolean result = componentCommandService.handle(deleteComponentCommand);
 
-        if (component.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-
-        var componentResource = ComponentResourceFromEntityAssembler.toResourceFromEntity(component.get());
-        return new ResponseEntity<>(componentResource, HttpStatus.CREATED);
-    }
-
-    @Operation(summary = "Update an existing component", description = "Update the details of an existing component.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Component updated successfully"),
-        @ApiResponse(responseCode = "404", description = "Component not found")
-    })
-    @PutMapping("/{componentId}")
-    public ResponseEntity<ComponentResource> updateComponent(
-            @Parameter(description = "Long of the component to update") @PathVariable Long componentId,
-            @Parameter(description = "Updated details of the component") @RequestBody @Valid UpdateComponentResource resource) {
-        var updateComponentCommand = UpdateComponentCommandFromResourceAssembler.toCommandFromResource(componentId, resource);
-        var updatedComponent = componentCommandService.handle(updateComponentCommand);
-
-        return updatedComponent.map(component -> new ResponseEntity<>(
-                        ComponentResourceFromEntityAssembler.toResourceFromEntity(component), HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    @Operation(summary = "Delete a component", description = "Delete a specific component using its unique identifier.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "Component deleted successfully"),
-        @ApiResponse(responseCode = "404", description = "Component not found")
-    })
-    @DeleteMapping("/{componentId}")
-    public ResponseEntity<Void> deleteComponent(
-            @Parameter(description = "Long of the component to delete") @PathVariable Long componentId) {
-        var deleteComponentCommand = new DeleteComponentCommand(componentId);
-        Boolean result = componentCommandService.handle(deleteComponentCommand);
-
-        return result ?
-                new ResponseEntity<>(HttpStatus.NO_CONTENT) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    return result ?
+        new ResponseEntity<>(HttpStatus.NO_CONTENT) :
+        new ResponseEntity<>(HttpStatus.NOT_FOUND);
+  }
 }

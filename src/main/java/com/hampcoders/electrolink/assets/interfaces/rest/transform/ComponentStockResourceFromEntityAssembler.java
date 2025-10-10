@@ -2,22 +2,30 @@ package com.hampcoders.electrolink.assets.interfaces.rest.transform;
 
 import com.hampcoders.electrolink.assets.domain.model.entities.ComponentStock;
 import com.hampcoders.electrolink.assets.interfaces.rest.resource.ComponentStockResource;
-
 import java.util.Date;
 
+/**
+ * Assembler to convert ComponentStock entities into ComponentStockResource.
+ */
 public class ComponentStockResourceFromEntityAssembler {
 
-    public static ComponentStockResource toResourceFromEntity(ComponentStock entity) {
-        return new ComponentStockResource(
-                entity.getId(),
-                entity.getComponent().getComponentUid(),
-                entity.getComponent().getName(),
-                entity.getQuantityAvailable(),
-                entity.getAlertThreshold(),
-                entity.getLastUpdated()
-        );
-    }
+  /**
+   * Converts the ComponentStock entity to a ComponentStockResource.
+   *
+   * @param entity The ComponentStock entity.
+   * @return The resulting ComponentStockResource.
+   */
+  public static ComponentStockResource toResourceFromEntity(final ComponentStock entity) {
+    return new ComponentStockResource(
+        entity.getId(),
+        entity.getComponent().getComponentUid(),
+        entity.getComponent().getName(),
+        entity.getQuantityAvailable(),
+        entity.getAlertThreshold(),
+        entity.getLastUpdated()
+    );
+  }
 
-    private ComponentStockResourceFromEntityAssembler() {
-    }
+  private ComponentStockResourceFromEntityAssembler() {
+  }
 }
