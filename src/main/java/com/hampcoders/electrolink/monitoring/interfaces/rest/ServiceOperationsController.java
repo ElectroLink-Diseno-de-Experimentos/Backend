@@ -59,12 +59,18 @@ public class ServiceOperationsController {
    */
   @Operation(summary = "Create a new service operation")
   @PostMapping
-  public ResponseEntity<Long> createServiceOperation(
+  public ResponseEntity<ServiceOperationResource> createServiceOperation(
       @Valid @RequestBody CreateServiceOperationResource resource) {
     var command = CreateServiceOperationCommandFromResourceAssembler
         .toCommandFromResource(resource);
     var id = commandService.handle(command);
-    return new ResponseEntity<>(id.getId(), HttpStatus.CREATED);
+
+    var result = queryService.handle(new GetServiceOperationByIdQuery(id))
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+            "Service operation not found"));
+    var resourceResult = ServiceOperationResourceFromEntityAssembler.toResourceFromEntity(result);
+
+    return new ResponseEntity<>(resourceResult, HttpStatus.CREATED);
   }
 
   /**

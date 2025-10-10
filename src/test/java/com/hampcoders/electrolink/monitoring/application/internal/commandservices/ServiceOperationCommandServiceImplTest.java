@@ -54,10 +54,10 @@ public class ServiceOperationCommandServiceImplTest {
         );
 
         // Act
-        RequestId actualRequestId = serviceOperationCommandService.handle(command);
+        Long id = serviceOperationCommandService.handle(command);
 
         // Assert
-        assertEquals(requestId, actualRequestId, "Debe retornar el RequestId del comando.");
+        assertNull(id, "Expected id to be null because repository save is mocked and no id is set");
 
         verify(serviceOperationRepository).save(any(ServiceOperation.class));
         verifyNoMoreInteractions(serviceOperationRepository);
