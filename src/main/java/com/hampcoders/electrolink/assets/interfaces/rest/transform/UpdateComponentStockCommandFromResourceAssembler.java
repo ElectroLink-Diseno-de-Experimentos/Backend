@@ -4,13 +4,26 @@ import com.hampcoders.electrolink.assets.domain.model.commands.UpdateComponentSt
 import com.hampcoders.electrolink.assets.interfaces.rest.resource.UpdateComponentStockResource;
 import java.util.UUID;
 
+/**
+ * Assembler to convert UpdateComponentStockResource into an UpdateComponentStockCommand.
+ */
 public class UpdateComponentStockCommandFromResourceAssembler {
-    public static UpdateComponentStockCommand toCommandFromResource(Long technicianId, Long componentId, UpdateComponentStockResource resource) {
-        return new UpdateComponentStockCommand(
-                technicianId,
-                componentId,
-                resource.newQuantity(),
-                resource.newAlertThreshold()
-        );
-    }
+  /**
+   * Converts the resource, technician ID, and component ID into an UpdateComponentStockCommand.
+   *
+   * @param technicianId The ID of the technician whose stock is being updated.
+   * @param componentId The ID of the component stock item to update.
+   * @param resource The UpdateComponentStockResource containing new quantity and threshold.
+   * @return The resulting UpdateComponentStockCommand.
+   */
+  public static UpdateComponentStockCommand toCommandFromResource(
+      final Long technicianId, final Long componentId,
+      final UpdateComponentStockResource resource) {
+    return new UpdateComponentStockCommand(
+        technicianId,
+        componentId,
+        resource.newQuantity(),
+        resource.newAlertThreshold()
+    );
+  }
 }

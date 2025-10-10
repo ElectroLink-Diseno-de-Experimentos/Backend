@@ -1,36 +1,62 @@
 package com.hampcoders.electrolink.sdp.interfaces.rest.transform;
 
-import com.hampcoders.electrolink.sdp.domain.model.aggregates.ScheduleAggregate;
+import com.hampcoders.electrolink.sdp.domain.model.commands.CreateScheduleCommand;
+import com.hampcoders.electrolink.sdp.domain.model.commands.UpdateScheduleCommand;
+import com.hampcoders.electrolink.sdp.domain.model.entities.Schedule;
 import com.hampcoders.electrolink.sdp.interfaces.rest.resources.CreateScheduleResource;
 import com.hampcoders.electrolink.sdp.interfaces.rest.resources.ScheduleResource;
 import com.hampcoders.electrolink.sdp.interfaces.rest.resources.UpdateScheduleResource;
 
+/**
+ * Mapper class for Schedule entities and resources.
+ */
 public class ScheduleMapper {
 
-    public static ScheduleAggregate toModel(CreateScheduleResource resource) {
-        return new ScheduleAggregate(
-                resource.technicianId(),
-                resource.day(),
-                resource.startTime(),
-                resource.endTime()
-        );
-    }
+  /**
+   * Converts a {@link CreateScheduleResource} to a {@link CreateScheduleCommand}.
+   *
+   * @param resource The resource to convert.
+   * @return The converted command.
+   */
+  public static CreateScheduleCommand toCommand(CreateScheduleResource resource) {
+    return new CreateScheduleCommand(
+        resource.technicianId(),
+        resource.day(),
+        resource.startTime(),
+        resource.endTime()
+    );
+  }
 
-    public static ScheduleResource toResource(ScheduleAggregate model) {
-        return new ScheduleResource(
-                model.getId(),
-                model.getTechnicianId(),
-                model.getDay(),
-                model.getStartTime(),
-                model.getEndTime()
-        );
-    }
+  /**
+   * Converts an {@link UpdateScheduleResource} to an {@link UpdateScheduleCommand}.
+   *
+   * @param id The ID of the schedule to update.
+   * @param resource The resource containing the updated data.
+   * @return The converted command.
+   */
+  public static UpdateScheduleCommand toCommand(Long id, UpdateScheduleResource resource) {
+    return new UpdateScheduleCommand(
+        id,
+        resource.technicianId(),
+        resource.day(),
+        resource.startTime(),
+        resource.endTime()
+    );
+  }
 
-    public static void updateModel(ScheduleAggregate model, UpdateScheduleResource resource) {
-        model.updateFrom(
-                resource.day(),
-                resource.startTime(),
-                resource.endTime()
-        );
-    }
+  /**
+   * Converts a {@link Schedule} entity to a {@link ScheduleResource}.
+   *
+   * @param entity The entity to convert.
+   * @return The converted resource.
+   */
+  public static ScheduleResource toResource(Schedule entity) {
+    return new ScheduleResource(
+        entity.getId(),
+        entity.getTechnicianId(),
+        entity.getDay(),
+        entity.getStartTime(),
+        entity.getEndTime()
+    );
+  }
 }

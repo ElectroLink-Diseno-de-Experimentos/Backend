@@ -3,8 +3,6 @@ package com.hampcoders.electrolink.monitoring.application.internal.commandservic
 import com.hampcoders.electrolink.monitoring.domain.model.aggregates.Report;
 import com.hampcoders.electrolink.monitoring.domain.model.commands.AddPhotoCommand;
 import com.hampcoders.electrolink.monitoring.domain.model.entities.ReportPhoto;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportPhotoId;
 import com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories.ReportPhotoRepository;
 import com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories.ReportRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -35,13 +33,13 @@ public class ReportPhotoCommandServiceImplTest {
     @DisplayName("handle(AddPhotoCommand) should save photo when Report exists (AAA)")
     void handle_AddPhotoCommand_ShouldSavePhotoAndReturnId_WhenReportExists() {
         // Arrange
-        ReportId reportId = new ReportId(10L);
-        var url = "http://example.com/photo.jpg";
+        Long reportId = 10L;
+        var url = "https://example.com/photo.jpg";
 
         when(reportRepository.findById(eq(reportId))).thenReturn(Optional.of(mock(Report.class)));
         when(reportPhotoRepository.save(any(ReportPhoto.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        var command = new AddPhotoCommand(new ReportPhotoId(), reportId, url);
+        var command = new AddPhotoCommand(reportId, url);
 
         // Act
         var actualId = reportPhotoCommandService.handle(command);
@@ -58,12 +56,12 @@ public class ReportPhotoCommandServiceImplTest {
     @DisplayName("handle(AddPhotoCommand) should throw IllegalArgumentException if Report not found (AAA)")
     void handle_AddPhotoCommand_ShouldThrowException_WhenReportNotFound() {
         // Arrange
-        ReportId reportId = new ReportId(10L);
-        var url = "http://example.com/photo.jpg";
+        Long reportId = 10L;
+        var url = "https://example.com/photo.jpg";
 
         when(reportRepository.findById(eq(reportId))).thenReturn(Optional.empty());
 
-        var command = new AddPhotoCommand(new ReportPhotoId(), reportId, url);
+        var command = new AddPhotoCommand(reportId, url);
 
         // Act + Assert
         var ex = assertThrows(IllegalArgumentException.class, () -> {

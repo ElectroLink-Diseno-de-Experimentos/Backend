@@ -5,9 +5,8 @@ import com.hampcoders.electrolink.monitoring.domain.model.queries.GetAllRatingsQ
 import com.hampcoders.electrolink.monitoring.domain.model.queries.GetRatingByIdQuery;
 import com.hampcoders.electrolink.monitoring.domain.model.queries.GetRatingsByRequestIdQuery;
 import com.hampcoders.electrolink.monitoring.domain.model.queries.GetRatingsByTechnicianIdQuery;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RatingId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RequestId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.TechnicianId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.RequestId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.TechnicianId;
 import com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories.RatingRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,7 +55,7 @@ public class RatingQueryServiceImplTest {
     @DisplayName("handle(GetRatingByIdQuery) should return the Rating from repository (AAA)")
     void handle_GetRatingByIdQuery_ShouldReturnRating() {
         // Arrange
-        RatingId ratingId = new RatingId(10L);
+        Long ratingId = 10L;
         Rating expected = mock(Rating.class);
 
         when(ratingRepository.findById(eq(ratingId))).thenReturn(Optional.of(expected));
@@ -76,7 +75,7 @@ public class RatingQueryServiceImplTest {
     @DisplayName("handle(GetRatingByIdQuery) should return empty Optional when not found (AAA)")
     void handle_GetRatingByIdQuery_ShouldReturnEmptyOptionalWhenNotFound() {
         // Arrange
-        RatingId ratingId = new RatingId(11L);
+        Long ratingId = 11L;
 
         when(ratingRepository.findById(eq(ratingId))).thenReturn(Optional.empty());
         var query = new GetRatingByIdQuery(11L);

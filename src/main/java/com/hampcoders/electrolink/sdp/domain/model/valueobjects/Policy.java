@@ -4,15 +4,25 @@ import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents a policy with cancellation and terms and conditions.
+ * It is an embeddable value object.
+ */
 @Embeddable
 @Getter
 @NoArgsConstructor
 public class Policy {
-    private String cancellationPolicy;
-    private String termsAndConditions;
+  private String cancellationPolicy;
+  private String termsAndConditions;
 
-    public Policy(String cancellationPolicy, String termsAndConditions) {
-        this.cancellationPolicy = cancellationPolicy;
-        this.termsAndConditions = termsAndConditions;
-    }
+  /**
+   * Constructor for Policy.
+   *
+   * @param cancellationPolicy The cancellation policy.
+   * @param termsAndConditions The terms and conditions.
+   */
+  public Policy(String cancellationPolicy, String termsAndConditions) {
+    this.cancellationPolicy = cancellationPolicy;
+    this.termsAndConditions = termsAndConditions;
+  }
 }

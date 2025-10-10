@@ -13,10 +13,10 @@ public class UpdateServiceStatusCommandFromResourceAssemblerTest {
     @DisplayName("toCommandFromResource should correctly map UpdateServiceStatusResource to UpdateServiceStatusCommand (AAA)")
     void toCommandFromResource_ShouldMapResourceToCommand() {
         // Arrange
-        Long requestId = 40L;
+        Long serviceOperationId = 40L;
         String status = "COMPLETED";
 
-        var resource = new UpdateServiceStatusResource(requestId, status);
+        var resource = new UpdateServiceStatusResource(serviceOperationId, status);
 
         // Act
         UpdateServiceStatusCommand command = UpdateServiceStatusCommandFromResourceAssembler.toCommandFromResource(resource);
@@ -24,7 +24,7 @@ public class UpdateServiceStatusCommandFromResourceAssemblerTest {
         // Assert
         assertNotNull(command, "El comando retornado no debe ser nulo.");
 
-        assertEquals(requestId, command.requestId(), "El Request ID debe coincidir.");
+        assertEquals(serviceOperationId, command.serviceOperationId(), "El Service Operation ID debe coincidir.");
         assertEquals(status, command.newStatus(), "El nuevo estado debe coincidir.");
     }
 }

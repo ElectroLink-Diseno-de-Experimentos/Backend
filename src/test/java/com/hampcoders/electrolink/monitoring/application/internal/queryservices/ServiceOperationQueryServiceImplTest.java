@@ -1,11 +1,9 @@
 package com.hampcoders.electrolink.monitoring.application.internal.queryservices;
 
-import com.hampcoders.electrolink.monitoring.domain.model.aggregates.Report;
 import com.hampcoders.electrolink.monitoring.domain.model.aggregates.ServiceOperation;
 import com.hampcoders.electrolink.monitoring.domain.model.queries.*;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ReportId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RequestId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.TechnicianId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.RequestId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.TechnicianId;
 import com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories.ServiceOperationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,10 +53,10 @@ public class ServiceOperationQueryServiceImplTest {
     @DisplayName("handle(GetServiceOperationByIdQuery) should return the ServiceOperation from repository (AAA)")
     void handle_GetServiceOperationByIdQuery_ShouldReturnServiceOperation() {
         // Arrange
-        RequestId requestId = new RequestId(10L);
+        Long serviceOperationId = 10L;
         ServiceOperation expected = mock(ServiceOperation.class);
 
-        when(serviceOperationRepository.findByRequestId(eq(requestId))).thenReturn(Optional.of(expected));
+        when(serviceOperationRepository.findById(eq(serviceOperationId))).thenReturn(Optional.of(expected));
         var query = new GetServiceOperationByIdQuery(10L);
 
         // Act
@@ -67,7 +65,7 @@ public class ServiceOperationQueryServiceImplTest {
         // Assert
         assertTrue(actual.isPresent());
         assertSame(expected, actual.get());
-        verify(serviceOperationRepository).findByRequestId(requestId);
+        verify(serviceOperationRepository).findById(serviceOperationId);
         verifyNoMoreInteractions(serviceOperationRepository);
     }
 
@@ -75,9 +73,9 @@ public class ServiceOperationQueryServiceImplTest {
     @DisplayName("handle(GetServiceOperationByIdQuery) should return empty Optional when not found (AAA)")
     void handle_GetServiceOperationByIdQuery_ShouldReturnEmptyOptionalWhenNotFound() {
         // Arrange
-        RequestId requestId = new RequestId(11L);
+        Long serviceOperationId = 11L;
 
-        when(serviceOperationRepository.findByRequestId(eq(requestId))).thenReturn(Optional.empty());
+        when(serviceOperationRepository.findById(eq(serviceOperationId))).thenReturn(Optional.empty());
         var query = new GetServiceOperationByIdQuery(11L);
 
         // Act
@@ -85,7 +83,7 @@ public class ServiceOperationQueryServiceImplTest {
 
         // Assert
         assertTrue(actual.isEmpty(), "Must return empty Optional.");
-        verify(serviceOperationRepository).findByRequestId(requestId);
+        verify(serviceOperationRepository).findById(serviceOperationId);
         verifyNoMoreInteractions(serviceOperationRepository);
     }
 

@@ -3,11 +3,10 @@ package com.hampcoders.electrolink.monitoring.application.internal.commandservic
 import com.hampcoders.electrolink.monitoring.domain.model.aggregates.ServiceOperation;
 import com.hampcoders.electrolink.monitoring.domain.model.commands.CreateServiceOperationCommand;
 import com.hampcoders.electrolink.monitoring.domain.model.commands.UpdateServiceStatusCommand;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RequestId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ServiceStatus;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.TechnicianId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.RequestId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.ServiceStatus;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.TechnicianId;
 import com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories.ServiceOperationRepository;
-import io.jsonwebtoken.lang.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,10 +54,10 @@ public class ServiceOperationCommandServiceImplTest {
         );
 
         // Act
-        RequestId actualRequestId = serviceOperationCommandService.handle(command);
+        Long id = serviceOperationCommandService.handle(command);
 
         // Assert
-        assertEquals(requestId, actualRequestId, "Debe retornar el RequestId del comando.");
+        assertNull(id, "Expected id to be null because repository save is mocked and no id is set");
 
         verify(serviceOperationRepository).save(any(ServiceOperation.class));
         verifyNoMoreInteractions(serviceOperationRepository);
@@ -71,11 +70,11 @@ public class ServiceOperationCommandServiceImplTest {
     @DisplayName("handle(UpdateServiceStatusCommand) should update status to PENDING/IN_PROGRESS and save (AAA)")
     void handle_UpdateServiceStatusCommand_ShouldUpdateStatusAndSave() {
         // Arrange
-        RequestId requestId = new RequestId(10L);
+        Long serviceOperationId = 10L;
         var newStatus = ServiceStatus.PENDING.toString();
         ServiceOperation serviceOperation = mock(ServiceOperation.class);
 
-        when(serviceOperationRepository.findByRequestId(eq(requestId))).thenReturn(Optional.of(serviceOperation));
+        when(serviceOperationRepository.findById(eq(serviceOperationId))).thenReturn(Optional.of(serviceOperation));
 
         var command = new UpdateServiceStatusCommand(10L, newStatus);
 
@@ -83,8 +82,8 @@ public class ServiceOperationCommandServiceImplTest {
         serviceOperationCommandService.handle(command);
 
         // Assert
-        verify(serviceOperationRepository, times(1)).findByRequestId(requestId);
-        verify(serviceOperation, times(2)).updateStatus(ServiceStatus.PENDING);
+        verify(serviceOperationRepository, times(1)).findById(serviceOperationId);
+        verify(serviceOperation, times(1)).updateStatus(ServiceStatus.PENDING);
         verify(serviceOperationRepository, times(1)).save(serviceOperation);
         verify(serviceOperation, never()).setCompletedAt(any(OffsetDateTime.class));
         verifyNoMoreInteractions(serviceOperationRepository);
@@ -94,17 +93,16 @@ public class ServiceOperationCommandServiceImplTest {
     @DisplayName("handle(UpdateServiceStatusCommand) should update status to COMPLETED, set completedAt, and save (AAA)")
     void handle_UpdateServiceStatusCommand_ShouldUpdateToCompleted_SetCompletedAt_AndSave() {
         // Arrange
-        var requestId = 10L;
+        var serviceOperationId = 10L;
         var newStatus = ServiceStatus.COMPLETED.toString();
         var existingServiceOperation = mock(ServiceOperation.class);
 
-        var expectedRequestId = new RequestId(requestId);
         var expectedNewStatus = ServiceStatus.valueOf(newStatus);
         var fixedTime = OffsetDateTime.parse("2025-10-05T15:00:00Z");
 
-        when(serviceOperationRepository.findByRequestId(eq(expectedRequestId))).thenReturn(Optional.of(existingServiceOperation));
+        when(serviceOperationRepository.findById(eq(serviceOperationId))).thenReturn(Optional.of(existingServiceOperation));
 
-        var command = new UpdateServiceStatusCommand(requestId, newStatus);
+        var command = new UpdateServiceStatusCommand(serviceOperationId, newStatus);
 
         // Act + Assert
         try (MockedStatic<OffsetDateTime> mockedStatic = Mockito.mockStatic(OffsetDateTime.class)) {
@@ -115,8 +113,8 @@ public class ServiceOperationCommandServiceImplTest {
             serviceOperationCommandService.handle(command);
 
             // Assert
-            verify(serviceOperationRepository, times(1)).findByRequestId(eq(expectedRequestId));
-            verify(existingServiceOperation, times(2)).updateStatus(eq(expectedNewStatus));
+            verify(serviceOperationRepository, times(1)).findById(eq(serviceOperationId));
+            verify(existingServiceOperation, times(1)).updateStatus(eq(expectedNewStatus));
             verify(existingServiceOperation, times(1)).setCompletedAt(eq(fixedTime));
             verify(serviceOperationRepository, times(1)).save(eq(existingServiceOperation));
             verifyNoMoreInteractions(serviceOperationRepository);
@@ -127,13 +125,12 @@ public class ServiceOperationCommandServiceImplTest {
     @DisplayName("handle(UpdateServiceStatusCommand) should throw IllegalArgumentException if ServiceOperation not found (AAA)")
     void handle_UpdateServiceStatusCommand_ShouldThrowException_WhenNotFound(){
         // Arrange
-        var requestId = 10L;
-        var expectedRequestId = new RequestId(requestId);
+        var serviceOperationId = 10L;
         var newStatus = ServiceStatus.COMPLETED.toString();
 
-        when(serviceOperationRepository.findByRequestId(eq(expectedRequestId))).thenReturn(Optional.empty());
+        when(serviceOperationRepository.findById(eq(serviceOperationId))).thenReturn(Optional.empty());
 
-        var command = new UpdateServiceStatusCommand(requestId, newStatus);
+        var command = new UpdateServiceStatusCommand(serviceOperationId, newStatus);
 
         // Act + Assert
         var ex = assertThrows(IllegalArgumentException.class, () -> {
@@ -141,7 +138,7 @@ public class ServiceOperationCommandServiceImplTest {
         }, "Debe lanzar IllegalArgumentException si ServiceOperation no existe.");
 
         assertTrue(ex.getMessage().contains("ServiceOperation not found"));
-        verify(serviceOperationRepository, times(1)).findByRequestId(eq(expectedRequestId));
+        verify(serviceOperationRepository, times(1)).findById(eq(serviceOperationId));
         verify(serviceOperationRepository, never()).save(any(ServiceOperation.class));
         verifyNoMoreInteractions(serviceOperationRepository);
     }

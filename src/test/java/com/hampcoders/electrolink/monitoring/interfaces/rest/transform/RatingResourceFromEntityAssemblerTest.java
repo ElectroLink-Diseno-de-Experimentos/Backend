@@ -1,8 +1,8 @@
 package com.hampcoders.electrolink.monitoring.interfaces.rest.transform;
 
 import com.hampcoders.electrolink.monitoring.domain.model.aggregates.Rating;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RequestId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.TechnicianId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.RequestId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.TechnicianId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +26,7 @@ public class RatingResourceFromEntityAssemblerTest {
         var technicianId = new TechnicianId(SAMPLE_TECHNICIAN_ID_LONG);
 
         Rating entity = mock(Rating.class);
-        when(entity.getRatingId()).thenReturn(ratingId);
+        when(entity.getId()).thenReturn(ratingId);
         when(entity.getRequestId()).thenReturn(requestId);
         when(entity.getScore()).thenReturn(score);
         when(entity.getComment()).thenReturn(comment);
@@ -46,7 +46,7 @@ public class RatingResourceFromEntityAssemblerTest {
         assertEquals(raterId, resource.raterId(), "El raterId debe coincidir.");
         assertEquals(SAMPLE_TECHNICIAN_ID_LONG, resource.technicianId(), "El TechnicianId (ID Long) debe coincidir.");
 
-        verify(entity).getRatingId();
+        verify(entity).getId();
         verify(entity).getRequestId();
         verify(entity).getScore();
         verify(entity).getComment();

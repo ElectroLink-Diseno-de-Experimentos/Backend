@@ -3,16 +3,18 @@ package com.hampcoders.electrolink.monitoring.application.internal.commandservic
 import com.hampcoders.electrolink.monitoring.domain.model.aggregates.ServiceOperation;
 import com.hampcoders.electrolink.monitoring.domain.model.commands.CreateServiceOperationCommand;
 import com.hampcoders.electrolink.monitoring.domain.model.commands.UpdateServiceStatusCommand;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RequestId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ServiceStatus;
-import com.hampcoders.electrolink.monitoring.domain.services.IServiceOperationCommandService;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.RequestId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.ServiceStatus;
+import com.hampcoders.electrolink.monitoring.domain.services.ServiceOperationCommandService;
 import com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories.ServiceOperationRepository;
+import java.time.OffsetDateTime;
 import org.springframework.stereotype.Service;
 
-import java.time.OffsetDateTime;
-
+/**
+ * Implementation of the command service for ServiceOperation entities.
+ */
 @Service
-public class ServiceOperationCommandServiceImpl implements IServiceOperationCommandService {
+public class ServiceOperationCommandServiceImpl implements ServiceOperationCommandService {
 
   private final ServiceOperationRepository serviceOperationRepository;
 
@@ -20,8 +22,14 @@ public class ServiceOperationCommandServiceImpl implements IServiceOperationComm
     this.serviceOperationRepository = serviceOperationRepository;
   }
 
+  /**
+   * Handles the creation of a new service operation.
+   *
+   * @param command The command containing the details for the new service operation.
+   * @return The RequestId of the created service operation.
+   */
   @Override
-  public RequestId handle(CreateServiceOperationCommand command) {
+  public Long handle(CreateServiceOperationCommand command) {
     var requestId = command.requestId();
 
     var serviceOperation = new ServiceOperation(
@@ -33,16 +41,19 @@ public class ServiceOperationCommandServiceImpl implements IServiceOperationComm
     );
 
     serviceOperationRepository.save(serviceOperation);
-    return requestId;
+    return serviceOperation.getId();
   }
 
+  /**
+   * Handles the update of a service operation's status.
+   *
+   * @param command The command containing the ID and the new status.
+   */
   @Override
   public void handle(UpdateServiceStatusCommand command) {
     var serviceOperation = serviceOperationRepository
-        .findByRequestId(new RequestId(command.requestId()))
+        .findById(command.serviceOperationId())
         .orElseThrow(() -> new IllegalArgumentException("ServiceOperation not found"));
-
-    serviceOperation.updateStatus(ServiceStatus.valueOf(command.newStatus()));
 
     ServiceStatus newStatus = ServiceStatus.valueOf(command.newStatus());
     serviceOperation.updateStatus(newStatus);

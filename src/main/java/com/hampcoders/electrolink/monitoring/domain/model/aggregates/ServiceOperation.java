@@ -1,45 +1,76 @@
 package com.hampcoders.electrolink.monitoring.domain.model.aggregates;
 
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.RequestId;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.ServiceStatus;
-import com.hampcoders.electrolink.monitoring.domain.model.valueObjects.TechnicianId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.RequestId;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.ServiceStatus;
+import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.TechnicianId;
 import com.hampcoders.electrolink.shared.domain.model.aggregates.AuditableAbstractAggregateRootNoId;
-import jakarta.persistence.*;
-import lombok.Getter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
+/**
+ * Represents a service operation performed by a technician in response to a request.
+ * It is an Aggregate Root in the Monitoring context.
+ */
 @Entity
-@Table(name = "service_operations")
+@Table
 public class ServiceOperation extends AuditableAbstractAggregateRootNoId<ServiceOperation> {
 
-  @EmbeddedId
-  @AttributeOverride(name = "id", column = @Column(name = "request_id", nullable = false))
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(nullable = false, updatable = false)
+  @Getter
+  private Long id;
+
+  @Getter
+  @Embedded
+  @Column(nullable = false)
   private RequestId requestId;
 
   @Getter
-  @Column(name = "current_status", nullable = false)
+  @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private ServiceStatus currentStatus;
 
   @Getter
-  @Column(name = "started_at", nullable = false)
+  @Column(nullable = false)
   private OffsetDateTime startedAt;
 
+  @Setter
   @Getter
-  @Column(name = "completed_at")
+  @Column
   private OffsetDateTime completedAt;
 
   @Getter
   @Embedded
-  @AttributeOverride(name = "id", column = @Column(name = "technician_id", nullable = false))
+  @Column(nullable = false)
   private TechnicianId technicianId;
 
   public ServiceOperation() {
     super();
   }
 
+  /**
+   * Constructs a new ServiceOperation aggregate.
+   *
+   * @param requestId The unique identifier for the request/operation.
+   * @param technicianId The ID of the technician responsible for the operation.
+   * @param startedAt The time the operation started.
+   * @param completedAt The time the operation was completed (can be null).
+   * @param currentStatus The current status of the operation.
+   */
   public ServiceOperation(RequestId requestId, TechnicianId technicianId,
-                          OffsetDateTime startedAt, OffsetDateTime completedAt, ServiceStatus currentStatus) {
+                          OffsetDateTime startedAt, OffsetDateTime completedAt,
+                          ServiceStatus currentStatus) {
     this.requestId = requestId;
     this.technicianId = technicianId;
     this.startedAt = startedAt;
@@ -47,26 +78,12 @@ public class ServiceOperation extends AuditableAbstractAggregateRootNoId<Service
     this.currentStatus = currentStatus;
   }
 
-  public void complete(OffsetDateTime completedAt) {
-    this.completedAt = completedAt;
-  }
-
   public void updateStatus(ServiceStatus status) {
     this.currentStatus = status;
   }
+
   public ServiceStatus getStatus() {
     return currentStatus;
   }
 
-  public RequestId getRequestId() {
-    return requestId;
-  }
-
-  public void setCompletedAt(OffsetDateTime completedAt) {
-    this.completedAt = completedAt;
-  }
-
-  public OffsetDateTime getCompletedAt() {
-    return this.completedAt;
-  }
 }

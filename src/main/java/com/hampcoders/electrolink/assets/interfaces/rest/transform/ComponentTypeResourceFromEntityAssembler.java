@@ -5,13 +5,22 @@ import com.hampcoders.electrolink.assets.domain.model.valueobjects.ComponentType
 import com.hampcoders.electrolink.assets.interfaces.rest.resource.ComponentTypeResource;
 import org.springframework.stereotype.Component;
 
+/**
+ * Assembler to convert ComponentType entities into ComponentTypeResource.
+ */
 @Component
 public class ComponentTypeResourceFromEntityAssembler {
-    public static ComponentTypeResource toResourceFromEntity(ComponentType entity) {
-        return new ComponentTypeResource(
-                entity.getId(),
-                entity.getName(),
-                entity.getDescription()
-        );
-    }
+  /**
+   * Converts the ComponentType entity to a ComponentTypeResource.
+   *
+   * @param entity The ComponentType entity.
+   * @return The resulting ComponentTypeResource.
+   */
+  public static ComponentTypeResource toResourceFromEntity(final ComponentType entity) {
+    return new ComponentTypeResource(
+        entity.getId(),
+        entity.getName(),
+        entity.getDescription()
+    );
+  }
 }
