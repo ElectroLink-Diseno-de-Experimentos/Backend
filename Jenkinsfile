@@ -16,7 +16,7 @@ pipeline {
 
 		stage ('Testing Stage') {
 			steps {
-				withMaven(maven : 'MAVEN_3_6_3') {
+				withMaven(maven : 'Maven_3.9.11') {
 					bat 'mvn test -Dcheckstyle.skip=true'
 				}
 			}
@@ -24,7 +24,7 @@ pipeline {
 
 		stage ('package Stage') {
 			steps {
-				withMaven(maven : 'MAVEN_3_6_3') {
+				withMaven(maven : 'Maven_3.9.11') {
 					bat 'mvn package -Dcheckstyle.skip=true'
 				}
 			}
