@@ -58,6 +58,10 @@ public class Rating extends AuditableAbstractAggregateRootNoId<Rating> {
   @Column(nullable = false)
   private TechnicianId technicianId;
 
+  @Getter
+  @Column(name = "is_featured")
+  private Boolean isFeatured = false;
+
   protected Rating() {
     // Required by JPA
   }
@@ -78,6 +82,7 @@ public class Rating extends AuditableAbstractAggregateRootNoId<Rating> {
     this.comment = comment;
     this.raterId = raterId;
     this.technicianId = technicianId;
+    this.isFeatured = false; // Default to not featured
   }
 
   public void updateScore(int score) {
@@ -86,5 +91,13 @@ public class Rating extends AuditableAbstractAggregateRootNoId<Rating> {
 
   public void updateComment(String comment) {
     this.comment = comment;
+  }
+
+  public void feature() {
+    this.isFeatured = true;
+  }
+
+  public void unfeature() {
+    this.isFeatured = false;
   }
 }

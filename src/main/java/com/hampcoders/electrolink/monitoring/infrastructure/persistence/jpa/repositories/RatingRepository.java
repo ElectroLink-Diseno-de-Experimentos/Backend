@@ -29,6 +29,15 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
   List<Rating> findByTechnicianId(TechnicianId technicianId);
 
   /**
+   * Finds all featured ratings for a specific technician.
+   *
+   * @param technicianId The TechnicianId to filter by.
+   * @param isFeatured   The featured status.
+   * @return A list of featured ratings.
+   */
+  List<Rating> findByTechnicianIdAndIsFeatured(TechnicianId technicianId, Boolean isFeatured);
+
+  /**
    * Finds all ratings associated with a specific service operation request ID.
    *
    * @param requestId The RequestId to filter by.

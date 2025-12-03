@@ -5,6 +5,7 @@ import com.hampcoders.electrolink.monitoring.domain.model.queries.GetAllRatingsQ
 import com.hampcoders.electrolink.monitoring.domain.model.queries.GetRatingByIdQuery;
 import com.hampcoders.electrolink.monitoring.domain.model.queries.GetRatingsByRequestIdQuery;
 import com.hampcoders.electrolink.monitoring.domain.model.queries.GetRatingsByTechnicianIdQuery;
+import com.hampcoders.electrolink.monitoring.domain.model.queries.GetFeaturedRatingsByTechnicianIdQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +37,14 @@ public interface RatingQueryService {
    * @return A list of ratings for the specified technician.
    */
   List<Rating> handle(GetRatingsByTechnicianIdQuery query);
+
+  /**
+   * Retrieves all featured ratings for a specific technician.
+   *
+   * @param query The query object containing the technician ID.
+   * @return A list of featured ratings for the specified technician.
+   */
+  List<Rating> handle(GetFeaturedRatingsByTechnicianIdQuery query);
 
   /**
    * Retrieves all ratings associated with a specific request ID.

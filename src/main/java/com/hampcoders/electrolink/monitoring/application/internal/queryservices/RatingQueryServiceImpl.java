@@ -5,6 +5,7 @@ import com.hampcoders.electrolink.monitoring.domain.model.queries.GetAllRatingsQ
 import com.hampcoders.electrolink.monitoring.domain.model.queries.GetRatingByIdQuery;
 import com.hampcoders.electrolink.monitoring.domain.model.queries.GetRatingsByRequestIdQuery;
 import com.hampcoders.electrolink.monitoring.domain.model.queries.GetRatingsByTechnicianIdQuery;
+import com.hampcoders.electrolink.monitoring.domain.model.queries.GetFeaturedRatingsByTechnicianIdQuery;
 import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.RequestId;
 import com.hampcoders.electrolink.monitoring.domain.model.valueobjects.TechnicianId;
 import com.hampcoders.electrolink.monitoring.domain.services.RatingQueryService;
@@ -67,5 +68,16 @@ public class RatingQueryServiceImpl implements RatingQueryService {
   @Override
   public List<Rating> handle(GetRatingsByTechnicianIdQuery query) {
     return ratingRepository.findByTechnicianId(new TechnicianId(query.technicianId()));
+  }
+
+  /**
+   * Handles the query to retrieve all featured ratings for a specific technician.
+   *
+   * @param query The query containing the technician ID.
+   * @return A list of featured Rating entities.
+   */
+  @Override
+  public List<Rating> handle(GetFeaturedRatingsByTechnicianIdQuery query) {
+    return ratingRepository.findByTechnicianIdAndIsFeatured(new TechnicianId(query.technicianId()), true);
   }
 }
