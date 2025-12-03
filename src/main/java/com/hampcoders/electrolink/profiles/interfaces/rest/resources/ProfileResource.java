@@ -12,6 +12,7 @@ import com.hampcoders.electrolink.profiles.domain.model.valueobjects.Role;
  * @param street                    The street address of the profile.
  * @param role                      The role of the profile (e.g., CLIENT, TECHNICIAN).
  * @param additionalInfoOrCertification Additional information or certification details, depending on the role.
+ * @param isVerified                Whether the technician is verified.
  */
 public record ProfileResource(
   Long id,
@@ -20,7 +21,6 @@ public record ProfileResource(
     String email,
     String street,
   Role role,
-    String additionalInfoOrCertification
+    String additionalInfoOrCertification,
+    Boolean isVerified
 ) {}
-
-

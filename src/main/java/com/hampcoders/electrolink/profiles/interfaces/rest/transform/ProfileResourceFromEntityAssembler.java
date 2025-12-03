@@ -7,14 +7,17 @@ public class ProfileResourceFromEntityAssembler {
 
   public static ProfileResource toResourceFromEntity(Profile entity) {
     String info = null;
+    Boolean isVerified = null;
     switch (entity.getRole()) {
       case HOMEOWNER -> {
         if (entity.getHomeOwner() != null)
           info = entity.getHomeOwner().getAdditionalInfo();
       }
       case TECHNICIAN -> {
-        if (entity.getTechnician() != null)
+        if (entity.getTechnician() != null) {
           info = entity.getTechnician().getCertificationCode();
+          isVerified = entity.getTechnician().getIsVerified();
+        }
       }
     }
 
@@ -25,7 +28,8 @@ public class ProfileResourceFromEntityAssembler {
       entity.getEmail().address(),
       entity.getAddress().street(),
       entity.getRole(),
-      info
+      info,
+      isVerified
     );
   }
 }
