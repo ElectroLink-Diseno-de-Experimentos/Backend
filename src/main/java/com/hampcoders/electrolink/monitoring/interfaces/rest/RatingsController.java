@@ -7,6 +7,7 @@ import com.hampcoders.electrolink.monitoring.domain.model.queries.GetAllRatingsQ
 import com.hampcoders.electrolink.monitoring.domain.model.queries.GetRatingByIdQuery;
 import com.hampcoders.electrolink.monitoring.domain.model.queries.GetRatingsByRequestIdQuery;
 import com.hampcoders.electrolink.monitoring.domain.model.queries.GetRatingsByTechnicianIdQuery;
+import com.hampcoders.electrolink.monitoring.domain.model.queries.GetFeaturedRatingsByTechnicianIdQuery;
 import com.hampcoders.electrolink.monitoring.interfaces.rest.resources.CreateRatingResource;
 import com.hampcoders.electrolink.monitoring.interfaces.rest.resources.RatingResource;
 import com.hampcoders.electrolink.monitoring.interfaces.rest.resources.UpdateRatingResource;
@@ -158,6 +159,25 @@ public class RatingsController {
       @Parameter(description = "Technician ID") @PathVariable Long technicianId
   ) {
     var ratings = queryService.handle(new GetRatingsByTechnicianIdQuery(technicianId));
+    var resources = ratings.stream()
+        .map(RatingResourceFromEntityAssembler::toResourceFromEntity)
+        .toList();
+    return ResponseEntity.ok(resources);
+  }
+
+  /**
+   * Retrieves all featured ratings for a specific technician.
+   *
+   * @param technicianId The ID of the technician.
+   * @return A list of featured rating resources for the technician.
+   */
+  @Operation(summary = "Get featured ratings by technician ID")
+  @GetMapping("/technicians/{technicianId}/featured")
+  public ResponseEntity<List<RatingResource>> getFeaturedRatingsByTechnicianId(
+      @Parameter(description = "Technician ID") @PathVariable Long technicianId
+  ) {
+    var query = new GetFeaturedRatingsByTechnicianIdQuery(technicianId);
+    var ratings = queryService.handle(query);
     var resources = ratings.stream()
         .map(RatingResourceFromEntityAssembler::toResourceFromEntity)
         .toList();
