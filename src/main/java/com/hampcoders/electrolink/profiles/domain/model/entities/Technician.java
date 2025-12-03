@@ -13,10 +13,14 @@ public class Technician {
   @Column(name = "certification_code", length = 50)
   private String certificationCode;
 
+  @Column(name = "is_verified")
+  private Boolean isVerified = false;
+
   protected Technician() {}
 
   public Technician(String certificationCode) {
     this.certificationCode = certificationCode;
+    this.isVerified = false; // Default to not verified
   }
 
   public Long getId() {
@@ -27,7 +31,15 @@ public class Technician {
     return certificationCode;
   }
 
+  public Boolean getIsVerified() {
+    return isVerified;
+  }
+
   public void updateCertification(String newCode) {
     this.certificationCode = newCode;
+  }
+
+  public void verify() {
+    this.isVerified = true;
   }
 }
