@@ -10,6 +10,7 @@ import com.hampcoders.electrolink.monitoring.domain.services.RatingCommandServic
 import com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories.RatingRepository;
 import com.hampcoders.electrolink.monitoring.infrastructure.persistence.jpa.repositories.ServiceOperationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implementation of the command service for Rating entities.
@@ -27,6 +28,7 @@ public class RatingCommandServiceImpl implements RatingCommandService {
   }
 
   @Override
+  @Transactional
   public Long handle(AddRatingCommand command) {
 
     ServiceOperation serviceOperation = serviceOperationRepository
@@ -47,20 +49,43 @@ public class RatingCommandServiceImpl implements RatingCommandService {
         command.technicianId()
     );
 
+    // Automatically set isFeatured based on score
+    if (rating.getScore() == 5) {
+      rating.feature();
+    } else {
+      rating.unfeature();
+    }
+
     ratingRepository.save(rating);
     return rating.getId();
   }
 
   @Override
+  @Transactional
   public void handle(UpdateRatingCommand command) {
     var rating = ratingRepository.findById(command.ratingId())
         .orElseThrow(() -> new IllegalArgumentException("Rating not found"));
-    rating.updateScore(command.score());
-    rating.updateComment(command.comment());
+
+
+    if (command.score() != null) {
+      rating.updateScore(command.score());
+    }
+
+    if (command.comment() != null) {
+      rating.updateComment(command.comment());
+    }
+
+    if (rating.getScore() == 5) {
+      rating.feature();
+    } else {
+      rating.unfeature();
+    }
+    
     ratingRepository.save(rating);
   }
 
   @Override
+  @Transactional
   public void handle(DeleteRatingCommand command) {
     var rating = ratingRepository.findById(command.ratingId())
         .orElseThrow(() -> new IllegalArgumentException("Rating not found"));
