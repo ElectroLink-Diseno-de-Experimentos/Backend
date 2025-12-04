@@ -7,4 +7,4 @@ package com.hampcoders.electrolink.monitoring.domain.model.commands;
  * @param score The new score value.
  * @param comment The new comment text.
  */
-public record UpdateRatingCommand(Long ratingId, int score, String comment) {}
+public record UpdateRatingCommand(Long ratingId, Integer score, String comment) {}
