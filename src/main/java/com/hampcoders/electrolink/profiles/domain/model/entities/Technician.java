@@ -20,7 +20,7 @@ public class Technician {
 
   public Technician(String certificationCode) {
     this.certificationCode = certificationCode;
-    this.isVerified = false; // Default to not verified
+    this.isVerified = true;
   }
 
   public Long getId() {
